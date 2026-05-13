@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { verifySessionCookie, SESSION_COOKIE } from "@/lib/firebase/admin";
+import { isAllowed } from "@/lib/firebase/allowlist";
 
 const PUBLIC_PATHS = ["/login", "/api/auth", "/_next", "/favicon.ico"];
 
@@ -14,12 +15,28 @@ export async function proxy(request: NextRequest) {
 
   const cookie = request.cookies.get(SESSION_COOKIE)?.value;
   const decoded = await verifySessionCookie(cookie);
+  const authed = decoded && isAllowed(decoded.email);
 
-  if (!decoded && !isPublic) {
+  if (!authed && !isPublic) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
-    url.searchParams.set("next", pathname);
-    return NextResponse.redirect(url);
+    // Si el cookie existía pero el email no está allowlisted, limpia.
+    const res = NextResponse.redirect(url);
+    if (cookie && decoded && !isAllowed(decoded.email)) {
+      res.cookies.set({
+        name: SESSION_COOKIE,
+        value: "",
+        maxAge: 0,
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        path: "/",
+      });
+      url.searchParams.set("error", "no-autorizado");
+    } else {
+      url.searchParams.set("next", pathname);
+    }
+    return res;
   }
 
   return NextResponse.next({ request });

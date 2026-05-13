@@ -1,11 +1,14 @@
 import { type NextRequest, NextResponse } from "next/server";
+import { FieldValue } from "firebase-admin/firestore";
 import {
   createSessionCookieFromIdToken,
   SESSION_COOKIE,
   SESSION_DURATION_MS,
+  adminAuth,
   adminDb,
+  verifySessionCookie,
 } from "@/lib/firebase/admin";
-import { FieldValue } from "firebase-admin/firestore";
+import { isAllowed } from "@/lib/firebase/allowlist";
 
 export async function POST(req: NextRequest) {
   let body: {
@@ -24,19 +27,46 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Missing idToken" }, { status: 400 });
   }
 
-  let sessionCookie: string;
+  // Verify the ID token directly so we can check the allowlist *before*
+  // minting a session cookie or persisting anything.
+  let uid: string;
+  let email: string | null;
   try {
-    sessionCookie = await createSessionCookieFromIdToken(body.idToken);
-  } catch (err: unknown) {
+    const decoded = await adminAuth().verifyIdToken(body.idToken);
+    uid = decoded.uid;
+    email = decoded.email ?? null;
+  } catch (err) {
     const msg = err instanceof Error ? err.message : "verify failed";
     return NextResponse.json({ error: msg }, { status: 401 });
   }
 
-  // Persist Google OAuth tokens for Calendar API (server-side only).
-  // Decoded uid pulled from session cookie verify in a follow-up read.
+  if (!isAllowed(email)) {
+    // Defense-in-depth: nuke the just-created Firebase Auth user so this email
+    // can't accumulate state by repeated attempts.
+    try {
+      await adminAuth().deleteUser(uid);
+    } catch (err) {
+      console.error("deleteUser:", err);
+    }
+    return NextResponse.json(
+      { error: "Acceso restringido. Tu correo no está autorizado para usar este calendario." },
+      { status: 403 },
+    );
+  }
+
+  // Mint session cookie.
+  let sessionCookie: string;
+  try {
+    sessionCookie = await createSessionCookieFromIdToken(body.idToken);
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : "cookie mint failed";
+    return NextResponse.json({ error: msg }, { status: 401 });
+  }
+
+  // Persist Google OAuth tokens for Calendar API (optional, only if user
+  // signed in with Google provider and Calendar scope granted).
   if (body.accessToken) {
     try {
-      const { verifySessionCookie } = await import("@/lib/firebase/admin");
       const decoded = await verifySessionCookie(sessionCookie);
       if (decoded) {
         await adminDb()
