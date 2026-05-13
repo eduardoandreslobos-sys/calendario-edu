@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Vercel handles bundling; no static export.
+  output: "standalone",
   images: { unoptimized: true },
   experimental: {
     serverActions: { bodySizeLimit: "1mb" },

@@ -1,0 +1,17 @@
+node_modules
+.next
+.git
+.github
+.claude
+.env.local
+.env*.local
+Dockerfile
+.dockerignore
+README.md
+*.log
+supabase
+firestore.rules
+firestore.indexes.json
+firebase.json
+apphosting.yaml
+.firebaserc

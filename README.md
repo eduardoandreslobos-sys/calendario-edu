@@ -73,10 +73,32 @@ con admin SDK (que bypasea reglas tras verificar la session cookie).
 
 ## Despliegue
 
-Firebase App Hosting toma push a `main` → corre `npm run build` → publica Next.js
-SSR en Cloud Run con CDN global. Config en `apphosting.yaml`.
+Cloud Run directo (sin GitHub Actions interactivo), construido con Cloud Build a
+partir del `Dockerfile`. Configuración en `apphosting.yaml` para una migración
+futura a Firebase App Hosting.
 
 ```bash
+gcloud run deploy calendario-edu \
+  --source . \
+  --region southamerica-east1 \
+  --allow-unauthenticated \
+  --project nodo-build
 firebase deploy --only firestore:rules,firestore:indexes
-firebase apphosting:backends:create   # interactivo, primera vez
 ```
+
+**Live:** https://calendario-edu-770391066863.southamerica-east1.run.app
+
+## Google Calendar sync (opcional)
+
+La sincronización Google Calendar está implementada en `src/lib/google-calendar.ts`
+pero deshabilitada por defecto. Activarla requiere crear un OAuth 2.0 client en
+GCP Console (es la única acción que no puede automatizarse vía CLI — la API IAP
+OAuth fue deprecada en marzo 2026).
+
+Pasos para activar:
+1. Console → APIs & Services → OAuth consent screen → External · Testing,
+   agregar `calendar.events` a scopes, agregarte como test user
+2. Console → APIs & Services → Credentials → Create OAuth 2.0 Client ID
+   (Web), copiar Client ID
+3. Firebase Console → Auth → Sign-in method → Google → Enable con el Client ID
+4. En la app, conectar via botón "Conectar Google Calendar"
