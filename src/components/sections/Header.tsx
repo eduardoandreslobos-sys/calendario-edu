@@ -1,5 +1,7 @@
 import { Reveal } from "@/components/effects/Reveal";
 import { SplitReveal } from "@/components/effects/SplitReveal";
+import { TOTALS } from "@/lib/events";
+import { fmtHours } from "@/lib/format";
 
 export function Header() {
   return (
@@ -7,7 +9,7 @@ export function Header() {
       <Reveal delay={0.08} y={14} duration={0.7}>
         <p className="inline-flex items-center gap-2.5 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-[color:var(--color-text-soft)] mb-3.5">
           <span aria-hidden="true" className="inline-block h-px w-[22px] bg-current opacity-45" />
-          27 sesiones · 76.7 horas · 4 cursos
+          {TOTALS.sessions} sesiones · {fmtHours(TOTALS.hours)} horas · {TOTALS.courses} cursos
         </p>
       </Reveal>
 
@@ -30,7 +32,7 @@ export function Header() {
 
       <Reveal delay={0.48} y={14} duration={0.8}>
         <p className="font-serif italic text-[clamp(16px,1.9vw,21px)] text-[color:var(--color-text-soft)] mt-3.5 tracking-[-0.005em]">
-          Compromisos docentes · Mayo a julio de 2026
+          Compromisos docentes · Mayo a octubre de 2026
         </p>
       </Reveal>
     </header>

@@ -4,6 +4,10 @@ import "./globals.css";
 import { MeshBg } from "@/components/effects/MeshBg";
 import { GrainOverlay } from "@/components/effects/GrainOverlay";
 import { SmoothScroll } from "@/components/effects/SmoothScroll";
+import { TOTALS } from "@/lib/events";
+import { fmtHours } from "@/lib/format";
+
+const description = `${TOTALS.sessions} sesiones · ${fmtHours(TOTALS.hours)} horas · Mayo a octubre de 2026`;
 
 const inter = Inter({
   subsets: ["latin"],
@@ -28,10 +32,10 @@ const jetbrains = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: "Calendario Edu — Compromisos docentes",
-  description: "27 sesiones · 76.7 horas · Mayo a julio de 2026",
+  description,
   openGraph: {
     title: "Calendario Edu — Compromisos docentes",
-    description: "27 sesiones · 76.7 horas · Mayo a julio de 2026",
+    description,
     type: "website",
   },
 };

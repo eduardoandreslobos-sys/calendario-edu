@@ -1,7 +1,7 @@
 # Calendario Edu
 
 Calendario interactivo de los compromisos docentes de Eduardo Lobos Stevens —
-**27 sesiones · 76.7 horas · Mayo a julio de 2026**.
+**63 sesiones · 204.7 horas · Mayo a octubre de 2026**.
 
 Construido siguiendo el Awwwards Production System v3.
 
@@ -29,13 +29,15 @@ Respeta `prefers-reduced-motion`. Sin `#000` / `#fff` puros.
 
 ## Categorías
 
-| Curso                                    | Categoría     | Sesiones | Horas |
-| ---------------------------------------- | ------------- | -------- | ----- |
-| Herramientas IA para la Productividad    | UAI Postgrado | 4        | 16    |
-| IA para los Negocios (UAI Corporate)     | UAI Postgrado | 1        | 10    |
-| Ing. de Prompts — Banco Santander        | FEN UChile    | 12       | 24    |
-| Sistemas de Información (Ing. Civil 4°)  | UAI FIC       | 10       | 26.7  |
-| **Total**                                | —             | **27**   | **76.7** |
+| Curso                                       | Categoría             | Sesiones | Horas    |
+| ------------------------------------------- | --------------------- | -------- | -------- |
+| Herramientas IA para la Productividad       | UAI Postgrado         | 4        | 16       |
+| IA para los Negocios (UAI Corporate)        | UAI Postgrado         | 1        | 10       |
+| Ing. de Prompts — Banco Santander           | Santander (FEN)       | 12       | 24       |
+| Sistemas de Información (Ing. Civil 4°)     | UAI FIC               | 10       | 26.7     |
+| Diplomado Control de Gestión · Educación HC | Diplomado HC (FEN)    | 18       | 64       |
+| Diplomado Control de Gestión · Ed. Básica   | Diplomado Básica (FEN)| 18       | 64       |
+| **Total**                                   | —                     | **63**   | **204.7** |
 
 ## Desarrollo
 
