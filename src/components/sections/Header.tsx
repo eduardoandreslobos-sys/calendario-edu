@@ -7,7 +7,7 @@ export function Header() {
       <Reveal delay={0.08} y={14} duration={0.7}>
         <p className="inline-flex items-center gap-2.5 font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-[color:var(--color-text-soft)] mb-3.5">
           <span aria-hidden="true" className="inline-block h-px w-[22px] bg-current opacity-45" />
-          26 sesiones · 74.7 horas · 4 cursos
+          27 sesiones · 76.7 horas · 4 cursos
         </p>
       </Reveal>
 

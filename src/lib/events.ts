@@ -31,9 +31,13 @@ function ev(
   };
 }
 
+// 12 sesiones · L+Mi 11:30–13:30 · 11 may – 1 jul 2026
+// Canceladas: 18, 20 y 27 mayo. Recuperaciones: 22, 24 jun y 1 jul.
+// Festivo: lunes 29 jun (San Pedro y San Pablo).
 const santanderDates = [
-  "2026-05-11","2026-05-13","2026-05-18","2026-05-20","2026-05-25",
+  "2026-05-11","2026-05-13","2026-05-25",
   "2026-06-01","2026-06-03","2026-06-08","2026-06-10","2026-06-15","2026-06-17",
+  "2026-06-22","2026-06-24","2026-07-01",
 ];
 
 const herramientasDates = ["2026-05-26","2026-05-28","2026-06-02","2026-06-04"];
@@ -52,7 +56,7 @@ export const EVENTS: CalEvent[] = [
       "Ing. de Prompts — Banco Santander",
       d, "11:30", "13:30",
       "Online · Teams",
-      `Sesión ${i + 1} de 11 · Coord. Nataly Rengifo Torres`,
+      `Sesión ${i + 1} de 12 · Coord. Nataly Rengifo Torres`,
     ),
   ),
   ...herramientasDates.map((d, i) =>

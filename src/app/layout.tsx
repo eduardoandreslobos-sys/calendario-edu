@@ -28,10 +28,10 @@ const jetbrains = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: "Calendario Edu — Compromisos docentes",
-  description: "26 sesiones · 74.7 horas · Mayo a julio de 2026",
+  description: "27 sesiones · 76.7 horas · Mayo a julio de 2026",
   openGraph: {
     title: "Calendario Edu — Compromisos docentes",
-    description: "26 sesiones · 74.7 horas · Mayo a julio de 2026",
+    description: "27 sesiones · 76.7 horas · Mayo a julio de 2026",
     type: "website",
   },
 };
