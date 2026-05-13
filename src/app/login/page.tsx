@@ -4,11 +4,12 @@ import { LoginForm } from "@/components/sections/LoginForm";
 
 export const metadata = { title: "Entrar · Calendario Edu" };
 
-export default function LoginPage({
+export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ next?: string; sent?: string }>;
+  searchParams: Promise<{ next?: string }>;
 }) {
+  const { next } = await searchParams;
   return (
     <>
       <MeshBg />
@@ -19,23 +20,14 @@ export default function LoginPage({
             Calendario Edu
           </p>
           <h1 className="text-[28px] font-extrabold tracking-[-0.03em] leading-tight mb-1">
-            Entra para ver tu calendario
+            Entra con Google
           </h1>
           <p className="font-serif italic text-[15px] text-[color:var(--color-text-soft)] mb-7">
-            Te enviamos un enlace mágico al correo.
+            Tu calendario, sincronizado con Google Calendar.
           </p>
-          <LoginFormWrapper searchParams={searchParams} />
+          <LoginForm next={next} />
         </div>
       </main>
     </>
   );
-}
-
-async function LoginFormWrapper({
-  searchParams,
-}: {
-  searchParams: Promise<{ next?: string; sent?: string }>;
-}) {
-  const { next, sent } = await searchParams;
-  return <LoginForm next={next} sent={sent === "1"} />;
 }

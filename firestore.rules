@@ -1,0 +1,19 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Tu doc de usuario (perfil + tokens Google). Solo el dueño lee.
+    // Los tokens se escriben SOLO desde el server (admin SDK los bypassea).
+    match /users/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow write: if false;
+    }
+
+    // Los eventos también solo los lee el dueño; mutaciones via Server Actions (admin).
+    match /users/{uid}/events/{eventId} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow write: if false;
+    }
+  }
+}

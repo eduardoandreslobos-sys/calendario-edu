@@ -1,93 +1,117 @@
 import "server-only";
-import { createClient } from "@/lib/supabase/server";
+import { cookies } from "next/headers";
+import { Timestamp } from "firebase-admin/firestore";
+import { adminDb, verifySessionCookie, SESSION_COOKIE } from "@/lib/firebase/admin";
 import { EVENTS as STATIC_EVENTS, type CalEvent } from "@/lib/events";
 import { chileISO, chileLocalFromISO } from "@/lib/tz";
 import type { CatId } from "@/lib/cats";
+import { FieldValue } from "firebase-admin/firestore";
 
-interface DbRow {
-  id: string;
-  external_id: string | null;
+interface DbEvent {
   title: string;
-  start_at: string;
-  end_at: string;
-  cat_id: CatId;
+  catId: CatId;
+  startAt: Timestamp;
+  endAt: Timestamp;
   location: string;
   notes: string;
   canceled: boolean;
+  externalId: string | null;
+  googleEventId: string | null;
 }
-
-const rowToEvent = (r: DbRow): CalEvent => ({
-  id: r.id,
-  title: r.title,
-  start: chileLocalFromISO(r.start_at),
-  end: chileLocalFromISO(r.end_at),
-  catId: r.cat_id,
-  location: r.location,
-  notes: r.notes,
-  canceled: r.canceled,
-  externalId: r.external_id,
-});
 
 export interface LoadedEvents {
   events: CalEvent[];
   canEdit: boolean;
   userEmail: string | null;
+  googleConnected: boolean;
   configured: boolean;
 }
 
 export async function loadEvents(): Promise<LoadedEvents> {
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
-    return { events: STATIC_EVENTS, canEdit: false, userEmail: null, configured: false };
+  if (!process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID) {
+    return {
+      events: STATIC_EVENTS,
+      canEdit: false,
+      userEmail: null,
+      googleConnected: false,
+      configured: false,
+    };
   }
 
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) {
-    return { events: STATIC_EVENTS, canEdit: false, userEmail: null, configured: true };
+  const cookieStore = await cookies();
+  const cookie = cookieStore.get(SESSION_COOKIE)?.value;
+  const decoded = await verifySessionCookie(cookie);
+  if (!decoded) {
+    return {
+      events: STATIC_EVENTS,
+      canEdit: false,
+      userEmail: null,
+      googleConnected: false,
+      configured: true,
+    };
   }
 
-  let { data: rows, error } = await supabase
-    .from("events")
-    .select(
-      "id, external_id, title, start_at, end_at, cat_id, location, notes, canceled",
-    )
-    .order("start_at", { ascending: true });
+  const userRef = adminDb().collection("users").doc(decoded.uid);
+  const eventsCol = userRef.collection("events");
 
-  if (error) {
-    console.error("loadEvents:", error.message);
-    return { events: [], canEdit: true, userEmail: user.email ?? null, configured: true };
+  const [userSnap, eventsSnap] = await Promise.all([userRef.get(), eventsCol.get()]);
+
+  // Auto-seed on first login (no events yet).
+  if (eventsSnap.empty) {
+    const batch = adminDb().batch();
+    for (const e of STATIC_EVENTS) {
+      const ref = eventsCol.doc();
+      batch.set(ref, {
+        title: e.title,
+        catId: e.catId,
+        startAt: Timestamp.fromDate(new Date(chileISO(e.start))),
+        endAt: Timestamp.fromDate(new Date(chileISO(e.end))),
+        location: e.location,
+        notes: e.notes,
+        canceled: false,
+        externalId: e.id,
+        googleEventId: null,
+        createdAt: FieldValue.serverTimestamp(),
+        updatedAt: FieldValue.serverTimestamp(),
+      });
+    }
+    await batch.commit();
+    const reread = await eventsCol.get();
+    return finalize(reread.docs, userSnap, decoded.email ?? null);
   }
 
-  // Auto-seed on first login.
-  if (!rows || rows.length === 0) {
-    const seed = STATIC_EVENTS.map((e) => ({
-      user_id: user.id,
-      external_id: e.id,
-      title: e.title,
-      cat_id: e.catId,
-      start_at: chileISO(e.start),
-      end_at: chileISO(e.end),
-      location: e.location,
-      notes: e.notes,
-      canceled: false,
-    }));
-    const { error: seedError } = await supabase
-      .from("events")
-      .upsert(seed, { onConflict: "user_id,external_id", ignoreDuplicates: true });
-    if (seedError) console.error("seed:", seedError.message);
-    const refresh = await supabase
-      .from("events")
-      .select("id, external_id, title, start_at, end_at, cat_id, location, notes, canceled")
-      .order("start_at", { ascending: true });
-    rows = refresh.data ?? [];
-  }
+  return finalize(eventsSnap.docs, userSnap, decoded.email ?? null);
+}
+
+function finalize(
+  docs: FirebaseFirestore.QueryDocumentSnapshot[],
+  userSnap: FirebaseFirestore.DocumentSnapshot,
+  email: string | null,
+): LoadedEvents {
+  const events: CalEvent[] = docs
+    .map((d) => {
+      const r = d.data() as DbEvent;
+      return {
+        id: d.id,
+        title: r.title,
+        start: chileLocalFromISO(r.startAt.toDate().toISOString()),
+        end: chileLocalFromISO(r.endAt.toDate().toISOString()),
+        catId: r.catId,
+        location: r.location ?? "",
+        notes: r.notes ?? "",
+        canceled: r.canceled ?? false,
+        externalId: r.externalId,
+      } satisfies CalEvent;
+    })
+    .sort((a, b) => a.start.localeCompare(b.start));
+
+  const googleConnected = Boolean(userSnap.data()?.google?.accessToken);
 
   return {
-    events: (rows as DbRow[]).map(rowToEvent),
+    events,
     canEdit: true,
-    userEmail: user.email ?? null,
+    userEmail: email,
+    googleConnected,
     configured: true,
   };
 }

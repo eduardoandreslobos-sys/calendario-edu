@@ -4,13 +4,13 @@ import { loadEvents } from "@/lib/load-events";
 import { calcTotals } from "@/lib/events";
 
 export default async function Home() {
-  const { events, canEdit, userEmail } = await loadEvents();
+  const { events, canEdit, userEmail, googleConnected } = await loadEvents();
   const totals = calcTotals(events);
 
   return (
     <main className="mx-auto max-w-[1280px] px-[clamp(16px,3vw,28px)] pt-[clamp(28px,5vw,64px)] pb-[clamp(48px,8vw,96px)] relative">
-      <Header totals={totals} userEmail={userEmail} />
-      <CalendarApp initialEvents={events} canEdit={canEdit} />
+      <Header totals={totals} userEmail={userEmail} googleConnected={googleConnected} />
+      <CalendarApp initialEvents={events} canEdit={canEdit} googleConnected={googleConnected} />
     </main>
   );
 }

@@ -1,33 +1,30 @@
 # Calendario Edu
 
 Calendario interactivo de los compromisos docentes de Eduardo Lobos Stevens —
-**63 sesiones · 204.7 horas · Mayo a octubre de 2026**.
+**63 sesiones · 204.7 horas · Mayo a octubre de 2026**, con sincronización
+bidireccional a Google Calendar.
 
 Construido siguiendo el Awwwards Production System v3.
 
 ## Stack
 
 - **Next.js 16** · App Router · React 19 · TypeScript · Turbopack
-- **Tailwind CSS v4** · `@theme` tokens en CSS, sin config file
-- **shadcn/ui** base + componentes custom con glassmorphism
-- **FullCalendar 6** (`@fullcalendar/react`) con vista mes y semana, locale español
-- **GSAP** + ScrollTrigger · **Lenis** smooth scroll · **Framer Motion** · **Anime.js**
+- **Tailwind CSS v4** · `@theme` tokens en CSS
+- **Firebase Auth** · sign-in con Google (OAuth scope `calendar.events`)
+- **Firestore** · NoSQL, RLS por usuario
+- **Google Calendar API** vía `googleapis` (push/update/delete bidireccional)
+- **Firebase App Hosting** · Cloud Run SSR + global CDN
+- **GSAP** + Lenis + Framer Motion + Anime.js · FullCalendar 6
+
+100% en GCP, free tier (Spark + Blaze sin sobrepasar quotas).
 
 ## Diseño
 
 Mood **Liquid Glass + Editorial**. Inter + Instrument Serif italic + JetBrains Mono.
+Mesh gradient · grain · glass cards · SplitText reveal · tilt 3D · respeta
+`prefers-reduced-motion`.
 
-Cinco efectos awwwards seleccionados:
-
-1. Animated mesh gradient en pasteles de las categorías
-2. SVG grain overlay (fractalNoise, multiply blend)
-3. Glass cards con `backdrop-filter: blur(24px) saturate(180%)`
-4. SplitText reveal de entrada con GSAP stagger
-5. Tilt 3D en stat cards (rAF-throttled, ±3.5°)
-
-Respeta `prefers-reduced-motion`. Sin `#000` / `#fff` puros.
-
-## Categorías
+## Categorías y eventos
 
 | Curso                                       | Categoría             | Sesiones | Horas    |
 | ------------------------------------------- | --------------------- | -------- | -------- |
@@ -39,16 +36,47 @@ Respeta `prefers-reduced-motion`. Sin `#000` / `#fff` puros.
 | Diplomado Control de Gestión · Ed. Básica   | Diplomado Básica (FEN)| 18       | 64       |
 | **Total**                                   | —                     | **63**   | **204.7** |
 
-## Desarrollo
+## Desarrollo local
 
 ```bash
 npm install
-npm run dev      # localhost:3000
-npm run build    # static export a ./out
+cp .env.example .env.local   # rellenar valores
+gcloud auth application-default login   # para que firebase-admin funcione
+gcloud auth application-default set-quota-project nodo-build
+npm run dev
 ```
 
-## Deploy
+Sin `.env.local` el calendario corre en **modo público read-only** (fallback útil
+para previews). Con env + login Google, todo el CRUD y la sincronización a Google
+Calendar quedan activos.
 
-Despliegue automático a GitHub Pages vía Actions en cada push a `main`
-(`.github/workflows/deploy.yml`). Static export con `basePath` ajustado al
-nombre del repo.
+## Arquitectura de datos (Firestore)
+
+```
+users/{uid}                       — perfil + tokens Google (escritos solo desde server)
+users/{uid}/events/{eventId}      — eventos del usuario, source of truth
+```
+
+Cada evento:
+```ts
+{
+  title, catId, startAt, endAt, location, notes,
+  canceled: boolean,
+  externalId: string | null,      // "santander-1" si vino del seed
+  googleEventId: string | null,   // ID en Google Calendar (si sincronizado)
+  createdAt, updatedAt
+}
+```
+
+RLS: cada usuario solo lee `users/{su-uid}`. Mutaciones siempre via Server Actions
+con admin SDK (que bypasea reglas tras verificar la session cookie).
+
+## Despliegue
+
+Firebase App Hosting toma push a `main` → corre `npm run build` → publica Next.js
+SSR en Cloud Run con CDN global. Config en `apphosting.yaml`.
+
+```bash
+firebase deploy --only firestore:rules,firestore:indexes
+firebase apphosting:backends:create   # interactivo, primera vez
+```
