@@ -2,21 +2,22 @@
 
 import { useMemo } from "react";
 import { CATS } from "@/lib/cats";
-import { eventsInRange } from "@/lib/events";
+import { eventsInRange, type CalEvent } from "@/lib/events";
 import { fmtHM, MONTHS_SHORT } from "@/lib/format";
 
 interface Props {
+  events: CalEvent[];
   start: Date | null;
   end: Date | null;
   viewType: string;
   onEventClick: (id: string) => void;
 }
 
-export function Agenda({ start, end, viewType, onEventClick }: Props) {
+export function Agenda({ events, start, end, viewType, onEventClick }: Props) {
   const items = useMemo(() => {
     if (!start || !end) return [];
-    return eventsInRange(start, end);
-  }, [start, end]);
+    return eventsInRange(events, start, end);
+  }, [events, start, end]);
 
   const title = viewType === "timeGridWeek" ? "Agenda de la semana" : "Agenda del mes";
   const meta = `${items.length} ${items.length === 1 ? "compromiso" : "compromisos"}`;
@@ -51,7 +52,7 @@ export function Agenda({ start, end, viewType, onEventClick }: Props) {
                     onEventClick(e.id);
                   }
                 }}
-                className="grid items-center gap-4 px-3 py-3.5 rounded-xl cursor-pointer border-b border-[color:var(--border-glass)] last:border-b-0 transition-[background,transform] duration-200 ease-out hover:bg-white/60 hover:translate-x-0.5 focus-visible:outline-2 focus-visible:outline-[color:var(--color-ink-soft)] focus-visible:outline-offset-2 [grid-template-columns:64px_1fr_auto] max-md:[grid-template-columns:56px_1fr]"
+                className={`grid items-center gap-4 px-3 py-3.5 rounded-xl cursor-pointer border-b border-[color:var(--border-glass)] last:border-b-0 transition-[background,transform] duration-200 ease-out hover:bg-white/60 hover:translate-x-0.5 focus-visible:outline-2 focus-visible:outline-[color:var(--color-ink-soft)] focus-visible:outline-offset-2 [grid-template-columns:64px_1fr_auto] max-md:[grid-template-columns:56px_1fr] ${e.canceled ? "opacity-50 line-through" : ""}`}
               >
                 <div
                   className="flex flex-col items-center justify-center py-2 rounded-xl bg-white/60 border border-[color:var(--border-glass)]"

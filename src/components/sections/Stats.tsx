@@ -3,18 +3,19 @@
 import { useMemo } from "react";
 import { Tilt } from "@/components/effects/Tilt";
 import { CATS, type CatId } from "@/lib/cats";
-import { eventsInRange } from "@/lib/events";
+import { eventsInRange, type CalEvent } from "@/lib/events";
 import { diffHours, fmtHours } from "@/lib/format";
 
 interface Props {
+  events: CalEvent[];
   start: Date | null;
   end: Date | null;
 }
 
-export function Stats({ start, end }: Props) {
+export function Stats({ events, start, end }: Props) {
   const data = useMemo(() => {
     if (!start || !end) return null;
-    const items = eventsInRange(start, end);
+    const items = eventsInRange(events, start, end).filter((e) => !e.canceled);
     const totalHours = items.reduce((acc, e) => acc + diffHours(e._start, e._end), 0);
     const uniqueDays = new Set(items.map((e) => e._start.toISOString().slice(0, 10))).size;
     const byCat: Partial<Record<CatId, number>> = {};

@@ -8,25 +8,26 @@ import interactionPlugin from "@fullcalendar/interaction";
 import esLocale from "@fullcalendar/core/locales/es";
 import type { EventContentArg, DatesSetArg, EventClickArg } from "@fullcalendar/core";
 
-import { EVENTS } from "@/lib/events";
+import { type CalEvent } from "@/lib/events";
 import { CATS, type CatId } from "@/lib/cats";
 import { fmtHM } from "@/lib/format";
 
 interface Props {
+  events: CalEvent[];
   onRangeChange: (range: { start: Date; end: Date }, viewType: string) => void;
   onEventClick: (eventId: string) => void;
 }
 
-export function CalendarView({ onRangeChange, onEventClick }: Props) {
+export function CalendarView({ events, onRangeChange, onEventClick }: Props) {
   const fcRef = useRef<FullCalendar>(null);
 
-  const events = EVENTS.map((e) => ({
+  const fcEvents = events.map((e) => ({
     id: e.id,
     title: e.title,
     start: e.start,
     end: e.end,
-    extendedProps: { catId: e.catId },
-    classNames: [`cat-${e.catId}`],
+    extendedProps: { catId: e.catId, canceled: !!e.canceled },
+    classNames: [`cat-${e.catId}`, e.canceled ? "fc-event-canceled" : ""].filter(Boolean),
   }));
 
   return (
@@ -54,7 +55,7 @@ export function CalendarView({ onRangeChange, onEventClick }: Props) {
         moreLinkText={(n) => `+${n} más`}
         dayHeaderContent={(arg) => arg.text.replace(/\./g, "")}
         slotLabelFormat={{ hour: "2-digit", minute: "2-digit", hour12: false }}
-        events={events}
+        events={fcEvents}
         eventClick={(info: EventClickArg) => {
           info.jsEvent.preventDefault();
           onEventClick(info.event.id);

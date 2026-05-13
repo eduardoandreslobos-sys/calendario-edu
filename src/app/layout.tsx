@@ -4,10 +4,10 @@ import "./globals.css";
 import { MeshBg } from "@/components/effects/MeshBg";
 import { GrainOverlay } from "@/components/effects/GrainOverlay";
 import { SmoothScroll } from "@/components/effects/SmoothScroll";
-import { TOTALS } from "@/lib/events";
+import { STATIC_TOTALS } from "@/lib/events";
 import { fmtHours } from "@/lib/format";
 
-const description = `${TOTALS.sessions} sesiones · ${fmtHours(TOTALS.hours)} horas · Mayo a octubre de 2026`;
+const description = `${STATIC_TOTALS.sessions} sesiones · ${fmtHours(STATIC_TOTALS.hours)} horas · Mayo a octubre de 2026`;
 
 const inter = Inter({
   subsets: ["latin"],

@@ -1,14 +1,11 @@
 import type { NextConfig } from "next";
 
-const isProd = process.env.NODE_ENV === "production";
-const repo = "calendario-edu";
-
 const nextConfig: NextConfig = {
-  output: "export",
+  // Vercel handles bundling; no static export.
   images: { unoptimized: true },
-  trailingSlash: true,
-  basePath: isProd ? `/${repo}` : "",
-  assetPrefix: isProd ? `/${repo}/` : "",
+  experimental: {
+    serverActions: { bodySizeLimit: "1mb" },
+  },
 };
 
 export default nextConfig;

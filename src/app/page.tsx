@@ -1,11 +1,16 @@
 import { Header } from "@/components/sections/Header";
 import { CalendarApp } from "@/components/sections/CalendarApp";
+import { loadEvents } from "@/lib/load-events";
+import { calcTotals } from "@/lib/events";
 
-export default function Home() {
+export default async function Home() {
+  const { events, canEdit, userEmail } = await loadEvents();
+  const totals = calcTotals(events);
+
   return (
     <main className="mx-auto max-w-[1280px] px-[clamp(16px,3vw,28px)] pt-[clamp(28px,5vw,64px)] pb-[clamp(48px,8vw,96px)] relative">
-      <Header />
-      <CalendarApp />
+      <Header totals={totals} userEmail={userEmail} />
+      <CalendarApp initialEvents={events} canEdit={canEdit} />
     </main>
   );
 }

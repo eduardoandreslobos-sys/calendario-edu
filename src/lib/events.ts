@@ -8,6 +8,8 @@ export interface CalEvent {
   catId: CatId;
   location: string;
   notes: string;
+  canceled?: boolean;
+  externalId?: string | null;
 }
 
 function ev(
@@ -187,22 +189,25 @@ export const EVENTS: CalEvent[] = [
   ...diplomaBasica,
 ];
 
-// Computed totals (used by Header + Layout metadata)
-export const TOTALS = (() => {
-  const hours = EVENTS.reduce((acc, e) => {
+export function calcTotals(events: CalEvent[]) {
+  const active = events.filter((e) => !e.canceled);
+  const hours = active.reduce((acc, e) => {
     const s = new Date(e.start).getTime();
     const t = new Date(e.end).getTime();
     return acc + Math.max(0, (t - s) / 3600000);
   }, 0);
   return {
-    sessions: EVENTS.length,
+    sessions: active.length,
     hours,
-    courses: new Set(EVENTS.map((e) => e.title)).size,
+    courses: new Set(active.map((e) => e.title)).size,
   };
-})();
+}
 
-export function eventsInRange(start: Date, end: Date) {
-  return EVENTS
+// Pre-computed totals from the static seed (used by layout metadata).
+export const STATIC_TOTALS = calcTotals(EVENTS);
+
+export function eventsInRange(events: CalEvent[], start: Date, end: Date) {
+  return events
     .map((e) => ({ ...e, _start: new Date(e.start), _end: new Date(e.end) }))
     .filter((e) => e._start >= start && e._start < end)
     .sort((a, b) => a._start.getTime() - b._start.getTime());
