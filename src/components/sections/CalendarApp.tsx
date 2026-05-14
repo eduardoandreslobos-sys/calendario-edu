@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, RefreshCw } from "lucide-react";
+import { Plus, RefreshCw, Users } from "lucide-react";
 import { Reveal } from "@/components/effects/Reveal";
 import { Stats } from "./Stats";
 import { Legend } from "./Legend";
@@ -10,37 +10,52 @@ import { CalendarView } from "./CalendarView";
 import { Agenda } from "./Agenda";
 import { EventModal } from "./EventModal";
 import { EventForm } from "./EventForm";
+import { ShareModal } from "./ShareModal";
 import { pushAllToGoogle } from "@/app/actions/events";
 import type { CalEvent } from "@/lib/events";
+import type { Role } from "@/lib/calendar-access";
+import type { CollaboratorSummary } from "@/lib/load-events";
 
 interface Props {
   initialEvents: CalEvent[];
-  canEdit: boolean;
+  role: Role | null;
+  ownerEmail: string;
+  collaborators: CollaboratorSummary[];
   googleConnected?: boolean;
 }
 
-type Mode = { type: "closed" } | { type: "view"; id: string } | { type: "edit"; event: CalEvent } | { type: "create" };
+type Mode =
+  | { type: "closed" }
+  | { type: "view"; id: string }
+  | { type: "edit"; event: CalEvent }
+  | { type: "create" };
 
-export function CalendarApp({ initialEvents, canEdit, googleConnected }: Props) {
+export function CalendarApp({
+  initialEvents,
+  role,
+  ownerEmail,
+  collaborators,
+  googleConnected,
+}: Props) {
   const router = useRouter();
   const [events, setEvents] = useState(initialEvents);
   const [range, setRange] = useState<{ start: Date; end: Date } | null>(null);
   const [viewType, setViewType] = useState<string>("dayGridMonth");
   const [mode, setMode] = useState<Mode>({ type: "closed" });
+  const [shareOpen, setShareOpen] = useState(false);
   const [, startTransition] = useTransition();
 
-  // Re-sync when server-fetched events change (after revalidatePath).
+  const canWrite = role === "owner" || role === "editor";
+  const isOwner = role === "owner";
+
   useEffect(() => {
     setEvents(initialEvents);
   }, [initialEvents]);
 
-  const handleRange = useCallback(
-    (r: { start: Date; end: Date }, v: string) => {
-      setRange(r);
-      setViewType(v);
-    },
-    [],
-  );
+  const handleRange = useCallback((r: { start: Date; end: Date }, v: string) => {
+    setRange(r);
+    setViewType(v);
+  }, []);
 
   const activeEvent = useMemo(() => {
     if (mode.type !== "view") return null;
@@ -67,24 +82,38 @@ export function CalendarApp({ initialEvents, canEdit, googleConnected }: Props) 
 
   return (
     <>
-      {canEdit && (
-        <Reveal delay={0.55} y={14}>
-          <div className="flex justify-end items-center gap-2 mb-3 flex-wrap">
-            {syncResult && (
-              <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-[color:var(--color-text-soft)]">
-                {syncResult}
-              </span>
-            )}
-            {googleConnected && (
-              <button
-                onClick={onSyncAll}
-                disabled={syncing}
-                className="inline-flex items-center gap-1.5 rounded-full bg-white border border-[color:var(--border-glass-strong)] px-3.5 py-2 text-[12px] font-semibold transition-colors duration-200 hover:bg-[color:var(--color-cream)] disabled:opacity-50"
-              >
-                <RefreshCw className={`w-3.5 h-3.5 ${syncing ? "animate-spin" : ""}`} />
-                {syncing ? "Sincronizando…" : "Empujar todo a Google"}
-              </button>
-            )}
+      <Reveal delay={0.55} y={14}>
+        <div className="flex justify-end items-center gap-2 mb-3 flex-wrap">
+          {syncResult && (
+            <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-[color:var(--color-text-soft)]">
+              {syncResult}
+            </span>
+          )}
+          {isOwner && googleConnected && (
+            <button
+              onClick={onSyncAll}
+              disabled={syncing}
+              className="inline-flex items-center gap-1.5 rounded-full bg-white border border-[color:var(--border-glass-strong)] px-3.5 py-2 text-[12px] font-semibold transition-colors duration-200 hover:bg-[color:var(--color-cream)] disabled:opacity-50"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${syncing ? "animate-spin" : ""}`} />
+              {syncing ? "Sincronizando…" : "Empujar todo a Google"}
+            </button>
+          )}
+          {isOwner && (
+            <button
+              onClick={() => setShareOpen(true)}
+              className="inline-flex items-center gap-1.5 rounded-full bg-white border border-[color:var(--border-glass-strong)] px-3.5 py-2 text-[12px] font-semibold transition-colors duration-200 hover:bg-[color:var(--color-cream)]"
+            >
+              <Users className="w-3.5 h-3.5" />
+              Compartir
+              {collaborators.length > 0 && (
+                <span className="ml-1 rounded-full bg-zinc-900 text-white px-1.5 text-[10px] leading-[16px]">
+                  {collaborators.length}
+                </span>
+              )}
+            </button>
+          )}
+          {canWrite && (
             <button
               onClick={() => setMode({ type: "create" })}
               className="inline-flex items-center gap-2 rounded-full bg-[color:var(--color-ink)] text-white px-4 py-2 text-[13px] font-semibold transition-all duration-200 ease-out hover:bg-[color:var(--color-ink-soft)] focus-visible:outline-2 focus-visible:outline-[color:var(--color-ink-soft)] focus-visible:outline-offset-2"
@@ -92,9 +121,9 @@ export function CalendarApp({ initialEvents, canEdit, googleConnected }: Props) 
               <Plus className="w-4 h-4" />
               Nuevo evento
             </button>
-          </div>
-        </Reveal>
-      )}
+          )}
+        </div>
+      </Reveal>
 
       <Reveal delay={0.62} y={20}>
         <Stats events={events} start={range?.start ?? null} end={range?.end ?? null} />
@@ -121,7 +150,7 @@ export function CalendarApp({ initialEvents, canEdit, googleConnected }: Props) 
 
       <EventModal
         event={activeEvent}
-        canEdit={canEdit}
+        canEdit={canWrite}
         onClose={() => setMode({ type: "closed" })}
         onEdit={(e) => setMode({ type: "edit", event: e })}
         onMutated={refresh}
@@ -135,6 +164,15 @@ export function CalendarApp({ initialEvents, canEdit, googleConnected }: Props) 
             setMode({ type: "closed" });
             refresh();
           }}
+        />
+      )}
+
+      {isOwner && (
+        <ShareModal
+          open={shareOpen}
+          onClose={() => setShareOpen(false)}
+          ownerEmail={ownerEmail}
+          collaborators={collaborators}
         />
       )}
     </>

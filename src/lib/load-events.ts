@@ -1,11 +1,16 @@
 import "server-only";
-import { cookies } from "next/headers";
-import { Timestamp } from "firebase-admin/firestore";
-import { adminDb, verifySessionCookie, SESSION_COOKIE } from "@/lib/firebase/admin";
+import { FieldValue, Timestamp } from "firebase-admin/firestore";
+import { adminDb } from "@/lib/firebase/admin";
 import { EVENTS as STATIC_EVENTS, type CalEvent } from "@/lib/events";
 import { chileISO, chileLocalFromISO } from "@/lib/tz";
 import type { CatId } from "@/lib/cats";
-import { FieldValue } from "firebase-admin/firestore";
+import {
+  calendarRef,
+  getAccess,
+  loadCalendar,
+  type AccessGrant,
+  type Role,
+} from "@/lib/calendar-access";
 
 interface DbEvent {
   title: string;
@@ -19,10 +24,17 @@ interface DbEvent {
   googleEventId: string | null;
 }
 
+export interface CollaboratorSummary {
+  email: string;
+  role: Exclude<Role, "owner">;
+}
+
 export interface LoadedEvents {
   events: CalEvent[];
-  canEdit: boolean;
+  role: Role | null;
   userEmail: string | null;
+  ownerEmail: string;
+  collaborators: CollaboratorSummary[];
   googleConnected: boolean;
   configured: boolean;
 }
@@ -31,33 +43,38 @@ export async function loadEvents(): Promise<LoadedEvents> {
   if (!process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID) {
     return {
       events: STATIC_EVENTS,
-      canEdit: false,
+      role: null,
       userEmail: null,
+      ownerEmail: "",
+      collaborators: [],
       googleConnected: false,
       configured: false,
     };
   }
 
-  const cookieStore = await cookies();
-  const cookie = cookieStore.get(SESSION_COOKIE)?.value;
-  const decoded = await verifySessionCookie(cookie);
-  if (!decoded) {
+  const access = await getAccess();
+  if (!access) {
     return {
       events: STATIC_EVENTS,
-      canEdit: false,
+      role: null,
       userEmail: null,
+      ownerEmail: "",
+      collaborators: [],
       googleConnected: false,
       configured: true,
     };
   }
 
-  const userRef = adminDb().collection("users").doc(decoded.uid);
-  const eventsCol = userRef.collection("events");
+  return await loadForUser(access);
+}
 
-  const [userSnap, eventsSnap] = await Promise.all([userRef.get(), eventsCol.get()]);
+async function loadForUser(access: AccessGrant): Promise<LoadedEvents> {
+  const cal = await loadCalendar();
+  const eventsCol = calendarRef().collection("events");
+  let snap = await eventsCol.get();
 
-  // Auto-seed on first login (no events yet).
-  if (eventsSnap.empty) {
+  // Seed on first owner load.
+  if (snap.empty && access.role === "owner") {
     const batch = adminDb().batch();
     for (const e of STATIC_EVENTS) {
       const ref = eventsCol.doc();
@@ -73,22 +90,14 @@ export async function loadEvents(): Promise<LoadedEvents> {
         googleEventId: null,
         createdAt: FieldValue.serverTimestamp(),
         updatedAt: FieldValue.serverTimestamp(),
+        createdBy: access.uid,
       });
     }
     await batch.commit();
-    const reread = await eventsCol.get();
-    return finalize(reread.docs, userSnap, decoded.email ?? null);
+    snap = await eventsCol.get();
   }
 
-  return finalize(eventsSnap.docs, userSnap, decoded.email ?? null);
-}
-
-function finalize(
-  docs: FirebaseFirestore.QueryDocumentSnapshot[],
-  userSnap: FirebaseFirestore.DocumentSnapshot,
-  email: string | null,
-): LoadedEvents {
-  const events: CalEvent[] = docs
+  const events: CalEvent[] = snap.docs
     .map((d) => {
       const r = d.data() as DbEvent;
       return {
@@ -105,12 +114,23 @@ function finalize(
     })
     .sort((a, b) => a.start.localeCompare(b.start));
 
-  const googleConnected = Boolean(userSnap.data()?.google?.accessToken);
+  const collaborators: CollaboratorSummary[] = Object.entries(cal.collaborators ?? {})
+    .map(([email, v]) => ({ email, role: v.role }))
+    .sort((a, b) => a.email.localeCompare(b.email));
+
+  // Read Google tokens from owner's user doc (per-user, not per-calendar).
+  let googleConnected = false;
+  try {
+    const userSnap = await adminDb().collection("users").doc(access.uid).get();
+    googleConnected = Boolean(userSnap.data()?.google?.accessToken);
+  } catch {}
 
   return {
     events,
-    canEdit: true,
-    userEmail: email,
+    role: access.role,
+    userEmail: access.email,
+    ownerEmail: cal.ownerEmail,
+    collaborators,
     googleConnected,
     configured: true,
   };

@@ -1,13 +1,12 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { cookies } from "next/headers";
 import { z } from "zod";
 import { FieldValue, Timestamp } from "firebase-admin/firestore";
-import { adminDb, verifySessionCookie, SESSION_COOKIE } from "@/lib/firebase/admin";
-import { EVENTS as STATIC_EVENTS } from "@/lib/events";
+import { adminDb } from "@/lib/firebase/admin";
 import { chileISO } from "@/lib/tz";
 import { pushEvent, deleteEventFromGoogle } from "@/lib/google-calendar";
+import { calendarRef, requireAccess, requireWriter } from "@/lib/calendar-access";
 
 const CAT_VALUES = [
   "uai_postgrado","uai_fic","fen_santander","fen_hc","fen_basica","geforce","nodo","personal",
@@ -24,20 +23,12 @@ const upsertSchema = z.object({
   notes: z.string().max(2000).default(""),
 });
 
-async function getUid(): Promise<string> {
-  const cookieStore = await cookies();
-  const cookie = cookieStore.get(SESSION_COOKIE)?.value;
-  const decoded = await verifySessionCookie(cookie);
-  if (!decoded) throw new Error("No autenticado");
-  return decoded.uid;
-}
-
-function eventsCol(uid: string) {
-  return adminDb().collection("users").doc(uid).collection("events");
+function eventsCol() {
+  return calendarRef().collection("events");
 }
 
 export async function upsertEvent(formData: FormData) {
-  const uid = await getUid();
+  const access = await requireWriter();
 
   const parsed = upsertSchema.safeParse({
     id: formData.get("id") || undefined,
@@ -64,22 +55,20 @@ export async function upsertEvent(formData: FormData) {
     return { ok: false as const, error: "Hora término debe ser posterior a la de inicio" };
   }
 
-  const col = eventsCol(uid);
+  const col = eventsCol();
   const docRef = d.id ? col.doc(d.id) : col.doc();
   const existing = d.id ? (await docRef.get()).data() : null;
   const existingGoogleId: string | null = existing?.googleEventId ?? null;
 
-  const googleEventId = await pushEvent(
-    uid,
-    {
-      title: d.title,
-      startISO,
-      endISO,
-      location: d.location,
-      notes: d.notes,
-    },
-    existingGoogleId,
-  );
+  // Google Calendar sync against the owner's account (only owner has Google tokens stored).
+  const ownerAccess = await getOwnerAccessForSync();
+  const googleEventId = ownerAccess
+    ? await pushEvent(
+        ownerAccess.uid,
+        { title: d.title, startISO, endISO, location: d.location, notes: d.notes },
+        existingGoogleId,
+      )
+    : existingGoogleId;
 
   await docRef.set(
     {
@@ -93,7 +82,7 @@ export async function upsertEvent(formData: FormData) {
       externalId: existing?.externalId ?? null,
       googleEventId,
       updatedAt: FieldValue.serverTimestamp(),
-      ...(existing ? {} : { createdAt: FieldValue.serverTimestamp() }),
+      ...(existing ? { lastEditedBy: access.uid } : { createdAt: FieldValue.serverTimestamp(), createdBy: access.uid }),
     },
     { merge: true },
   );
@@ -103,8 +92,8 @@ export async function upsertEvent(formData: FormData) {
 }
 
 export async function setCanceled(id: string, canceled: boolean) {
-  const uid = await getUid();
-  const ref = eventsCol(uid).doc(id);
+  await requireWriter();
+  const ref = eventsCol().doc(id);
   const snap = await ref.get();
   if (!snap.exists) return { ok: false as const, error: "Evento no existe" };
 
@@ -113,13 +102,13 @@ export async function setCanceled(id: string, canceled: boolean) {
 
   await ref.update({ canceled, updatedAt: FieldValue.serverTimestamp() });
 
-  // Reflect in Google Calendar: cancel = delete; uncancel = re-insert.
-  if (googleId && canceled) {
-    await deleteEventFromGoogle(uid, googleId);
+  const ownerAccess = await getOwnerAccessForSync();
+  if (ownerAccess && googleId && canceled) {
+    await deleteEventFromGoogle(ownerAccess.uid, googleId);
     await ref.update({ googleEventId: null });
-  } else if (!canceled) {
+  } else if (ownerAccess && !canceled) {
     const newGoogleId = await pushEvent(
-      uid,
+      ownerAccess.uid,
       {
         title: data.title,
         startISO: (data.startAt as Timestamp).toDate().toISOString(),
@@ -137,68 +126,31 @@ export async function setCanceled(id: string, canceled: boolean) {
 }
 
 export async function deleteEvent(id: string) {
-  const uid = await getUid();
-  const ref = eventsCol(uid).doc(id);
+  await requireWriter();
+  const ref = eventsCol().doc(id);
   const snap = await ref.get();
   if (!snap.exists) return { ok: false as const, error: "Evento no existe" };
   const googleId: string | null = snap.data()?.googleEventId ?? null;
-  if (googleId) await deleteEventFromGoogle(uid, googleId);
+  const ownerAccess = await getOwnerAccessForSync();
+  if (ownerAccess && googleId) await deleteEventFromGoogle(ownerAccess.uid, googleId);
   await ref.delete();
   revalidatePath("/");
   return { ok: true as const };
 }
 
-/**
- * Seed the user's calendar with the 63 academic events. Idempotent via externalId.
- */
-export async function seedAcademicEvents() {
-  const uid = await getUid();
-  const col = eventsCol(uid);
-
-  // Skip if any seeded event already exists.
-  const existing = await col.where("externalId", "!=", null).limit(1).get();
-  if (!existing.empty) return { ok: true as const, inserted: 0 };
-
-  const batch = adminDb().batch();
-  let count = 0;
-  for (const e of STATIC_EVENTS) {
-    const ref = col.doc();
-    const startAt = Timestamp.fromDate(new Date(chileISO(e.start)));
-    const endAt = Timestamp.fromDate(new Date(chileISO(e.end)));
-    batch.set(ref, {
-      title: e.title,
-      catId: e.catId,
-      startAt,
-      endAt,
-      location: e.location,
-      notes: e.notes,
-      canceled: false,
-      externalId: e.id,
-      googleEventId: null,
-      createdAt: FieldValue.serverTimestamp(),
-      updatedAt: FieldValue.serverTimestamp(),
-    });
-    count++;
-  }
-  await batch.commit();
-  revalidatePath("/");
-  return { ok: true as const, inserted: count };
-}
-
-/**
- * Push all seeded events to Google Calendar (one-shot, useful after first login).
- */
 export async function pushAllToGoogle() {
-  const uid = await getUid();
-  const snap = await eventsCol(uid).where("googleEventId", "==", null).get();
+  await requireAccess();
+  const ownerAccess = await getOwnerAccessForSync();
+  if (!ownerAccess) return { ok: true as const, pushed: 0 };
 
+  const snap = await eventsCol().where("googleEventId", "==", null).get();
   let pushed = 0;
   for (const doc of snap.docs) {
     const d = doc.data();
     const startISO = (d.startAt as Timestamp).toDate().toISOString();
     const endISO = (d.endAt as Timestamp).toDate().toISOString();
     const googleId = await pushEvent(
-      uid,
+      ownerAccess.uid,
       {
         title: d.title,
         startISO,
@@ -215,4 +167,30 @@ export async function pushAllToGoogle() {
   }
   revalidatePath("/");
   return { ok: true as const, pushed };
+}
+
+/**
+ * Find the owner's uid (whoever owns the calendar by email) to use their
+ * stored Google tokens for sync. Returns null if no Google connection.
+ */
+async function getOwnerAccessForSync(): Promise<{ uid: string } | null> {
+  try {
+    const calSnap = await calendarRef().get();
+    const ownerEmail = (calSnap.data()?.ownerEmail ?? "").toLowerCase();
+    if (!ownerEmail) return null;
+    // Find the user doc with matching email.
+    const usersSnap = await adminDb()
+      .collection("users")
+      .where("profile.email", "==", ownerEmail)
+      .limit(1)
+      .get();
+    const userDoc = usersSnap.docs[0];
+    if (!userDoc) return null;
+    const hasTokens = userDoc.data()?.google?.accessToken;
+    if (!hasTokens) return null;
+    return { uid: userDoc.id };
+  } catch (err) {
+    console.error("getOwnerAccessForSync:", err);
+    return null;
+  }
 }

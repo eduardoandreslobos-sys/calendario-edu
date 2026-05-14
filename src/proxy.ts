@@ -15,14 +15,15 @@ export async function proxy(request: NextRequest) {
 
   const cookie = request.cookies.get(SESSION_COOKIE)?.value;
   const decoded = await verifySessionCookie(cookie);
-  const authed = decoded && isAllowed(decoded.email);
+  const emailAllowed = decoded ? await isAllowed(decoded.email) : false;
+  const authed = decoded && emailAllowed;
 
   if (!authed && !isPublic) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     // Si el cookie existía pero el email no está allowlisted, limpia.
     const res = NextResponse.redirect(url);
-    if (cookie && decoded && !isAllowed(decoded.email)) {
+    if (cookie && decoded && !emailAllowed) {
       res.cookies.set({
         name: SESSION_COOKIE,
         value: "",

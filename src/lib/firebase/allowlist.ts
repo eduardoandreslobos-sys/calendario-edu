@@ -1,17 +1,21 @@
+import "server-only";
+import { loadCalendar, OWNER_EMAIL } from "@/lib/calendar-access";
+
 /**
- * Server-side allowlist of emails authorized to use this calendar.
- * Override via env var ALLOWED_EMAILS (comma-separated).
+ * Allowed emails are now sourced from Firestore (calendars/main): the owner
+ * plus all collaborators. Server-only — never reach the client.
  */
-const DEFAULT = "eduardoandres.lobos@gmail.com";
-
-export const ALLOWED_EMAILS: ReadonlySet<string> = new Set(
-  (process.env.ALLOWED_EMAILS ?? DEFAULT)
-    .split(",")
-    .map((s) => s.trim().toLowerCase())
-    .filter(Boolean),
-);
-
-export function isAllowed(email: string | null | undefined): boolean {
+export async function isAllowed(email: string | null | undefined): Promise<boolean> {
   if (!email) return false;
-  return ALLOWED_EMAILS.has(email.toLowerCase());
+  const e = email.toLowerCase();
+  if (e === OWNER_EMAIL) return true;
+  try {
+    const cal = await loadCalendar();
+    if (cal.ownerEmail.toLowerCase() === e) return true;
+    return Boolean(cal.collaborators?.[e]);
+  } catch (err) {
+    // If Firestore is unreachable, only the owner gets in.
+    console.error("isAllowed:", err);
+    return false;
+  }
 }

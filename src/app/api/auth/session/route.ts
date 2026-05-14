@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: msg }, { status: 401 });
   }
 
-  if (!isAllowed(email)) {
+  if (!(await isAllowed(email))) {
     // Defense-in-depth: nuke the just-created Firebase Auth user so this email
     // can't accumulate state by repeated attempts.
     try {
