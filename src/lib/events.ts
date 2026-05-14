@@ -45,6 +45,17 @@ const santanderDates = [
 ];
 
 // ──────────────────────────────────────────────────────────────────────────
+// FEN UChile · Santander Grupos A y B (12 sesiones c/u · L+Mi · 3 ago – 9 sept 2026)
+// Propuesta enviada a Raysa, pendiente confirmación.
+// Mismo curso Ing. de Prompts (24h c/u) para audiencias adicionales del banco.
+// ──────────────────────────────────────────────────────────────────────────
+const santanderGrupoABDates = [
+  "2026-08-03","2026-08-05","2026-08-10","2026-08-12",
+  "2026-08-17","2026-08-19","2026-08-24","2026-08-26",
+  "2026-08-31","2026-09-02","2026-09-07","2026-09-09",
+];
+
+// ──────────────────────────────────────────────────────────────────────────
 // UAI Postgrado · Herramientas IA Productividad (4 sesiones · Ma+Ju 18:00–22:00)
 // ──────────────────────────────────────────────────────────────────────────
 const herramientasDates = ["2026-05-26","2026-05-28","2026-06-02","2026-06-04"];
@@ -155,6 +166,26 @@ export const EVENTS: CalEvent[] = [
       d, "11:30", "13:30",
       "En vivo · MS Teams",
       `Sesión ${i + 1} de 12 · Coord. Nataly Rengifo Torres`,
+    ),
+  ),
+  ...santanderGrupoABDates.map((d, i) =>
+    ev(
+      `santander-a-${i + 1}`,
+      "fen_santander",
+      "Ing. de Prompts — Santander · Grupo A",
+      d, "09:00", "11:00",
+      "En vivo · MS Teams",
+      `Sesión ${i + 1} de 12 · Grupo A · Propuesta enviada a Raysa, pendiente confirmación`,
+    ),
+  ),
+  ...santanderGrupoABDates.map((d, i) =>
+    ev(
+      `santander-b-${i + 1}`,
+      "fen_santander",
+      "Ing. de Prompts — Santander · Grupo B",
+      d, "11:30", "13:30",
+      "En vivo · MS Teams",
+      `Sesión ${i + 1} de 12 · Grupo B · Propuesta enviada a Raysa, pendiente confirmación`,
     ),
   ),
   ...herramientasDates.map((d, i) =>
