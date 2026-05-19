@@ -13,8 +13,11 @@ import { EventForm } from "./EventForm";
 import { ShareModal } from "./ShareModal";
 import { pushAllToGoogle } from "@/app/actions/events";
 import type { CalEvent } from "@/lib/events";
+import type { CatId } from "@/lib/cats";
 import type { Role } from "@/lib/calendar-access";
 import type { CollaboratorSummary } from "@/lib/load-events";
+
+const HIDDEN_CATS_KEY = "calendario-edu:hiddenCats";
 
 interface Props {
   initialEvents: CalEvent[];
@@ -47,6 +50,50 @@ export function CalendarApp({
 
   const canWrite = role === "owner" || role === "editor";
   const isOwner = role === "owner";
+
+  // Filter state (persisted in localStorage)
+  const [hiddenCats, setHiddenCats] = useState<Set<CatId>>(() => new Set());
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const raw = window.localStorage.getItem(HIDDEN_CATS_KEY);
+      if (raw) {
+        const arr = JSON.parse(raw) as CatId[];
+        setHiddenCats(new Set(arr));
+      }
+    } catch {}
+  }, []);
+
+  const persistHidden = useCallback((next: Set<CatId>) => {
+    try {
+      window.localStorage.setItem(HIDDEN_CATS_KEY, JSON.stringify([...next]));
+    } catch {}
+  }, []);
+
+  const toggleCat = useCallback(
+    (id: CatId) => {
+      setHiddenCats((prev) => {
+        const next = new Set(prev);
+        if (next.has(id)) next.delete(id);
+        else next.add(id);
+        persistHidden(next);
+        return next;
+      });
+    },
+    [persistHidden],
+  );
+
+  const showAllCats = useCallback(() => {
+    const empty = new Set<CatId>();
+    setHiddenCats(empty);
+    persistHidden(empty);
+  }, [persistHidden]);
+
+  const visibleEvents = useMemo(
+    () => (hiddenCats.size === 0 ? events : events.filter((e) => !hiddenCats.has(e.catId))),
+    [events, hiddenCats],
+  );
 
   useEffect(() => {
     setEvents(initialEvents);
@@ -126,21 +173,21 @@ export function CalendarApp({
       </Reveal>
 
       <Reveal delay={0.62} y={20}>
-        <Stats events={events} start={range?.start ?? null} end={range?.end ?? null} />
+        <Stats events={visibleEvents} start={range?.start ?? null} end={range?.end ?? null} />
       </Reveal>
       <Reveal delay={0.78} y={20}>
-        <Legend />
+        <Legend hiddenCats={hiddenCats} onToggle={toggleCat} onShowAll={showAllCats} />
       </Reveal>
       <Reveal delay={0.92} y={24}>
         <CalendarView
-          events={events}
+          events={visibleEvents}
           onRangeChange={handleRange}
           onEventClick={(id) => setMode({ type: "view", id })}
         />
       </Reveal>
       <Reveal delay={1.08} y={28}>
         <Agenda
-          events={events}
+          events={visibleEvents}
           start={range?.start ?? null}
           end={range?.end ?? null}
           viewType={viewType}
