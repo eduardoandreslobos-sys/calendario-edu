@@ -73,6 +73,24 @@ export function LoginForm({ next }: Props) {
     setError(null);
     startTransition(async () => {
       try {
+        // 1. Pre-check de allowlist — no enviamos el magic link a correos no autorizados.
+        const check = await fetch("/api/auth/check-email", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+        });
+        if (!check.ok) {
+          throw new Error("No se pudo verificar el correo. Reintenta.");
+        }
+        const { allowed } = (await check.json()) as { allowed: boolean };
+        if (!allowed) {
+          setError(
+            "Este correo no está autorizado para usar este calendario. Si crees que debería estarlo, pídeselo al dueño.",
+          );
+          return;
+        }
+
+        // 2. Recién ahora pedimos a Firebase enviar el magic link.
         const auth = getFirebaseAuth();
         const origin =
           process.env.NEXT_PUBLIC_SITE_URL ??
