@@ -3,6 +3,14 @@
 import { useCallback, useEffect, useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, RefreshCw, Users } from "lucide-react";
+import { onAuthStateChanged } from "firebase/auth";
+import {
+  collection,
+  onSnapshot,
+  orderBy,
+  query,
+  type Timestamp,
+} from "firebase/firestore";
 import { Reveal } from "@/components/effects/Reveal";
 import { Stats } from "./Stats";
 import { Legend } from "./Legend";
@@ -12,6 +20,8 @@ import { EventModal } from "./EventModal";
 import { EventForm } from "./EventForm";
 import { ShareModal } from "./ShareModal";
 import { pushAllToGoogle } from "@/app/actions/events";
+import { getFirebaseAuth, getFirebaseDb } from "@/lib/firebase/client";
+import { chileLocalFromISO } from "@/lib/tz";
 import type { CalEvent } from "@/lib/events";
 import type { CatId } from "@/lib/cats";
 import type { Role } from "@/lib/calendar-access";
@@ -98,6 +108,71 @@ export function CalendarApp({
   useEffect(() => {
     setEvents(initialEvents);
   }, [initialEvents]);
+
+  // Live sync via Firestore onSnapshot. Mientras la sesión esté activa,
+  // cualquier cambio que haga otro colaborador se refleja al tiro.
+  useEffect(() => {
+    if (role === null) return; // No auth = no sync (fallback público estático)
+
+    const auth = getFirebaseAuth();
+    let unsubEvents: (() => void) | null = null;
+
+    const unsubAuth = onAuthStateChanged(auth, (user) => {
+      if (unsubEvents) {
+        unsubEvents();
+        unsubEvents = null;
+      }
+      if (!user) return;
+
+      const db = getFirebaseDb();
+      const q = query(
+        collection(db, "calendars", "main", "events"),
+        orderBy("startAt", "asc"),
+      );
+      unsubEvents = onSnapshot(
+        q,
+        (snap) => {
+          const list: CalEvent[] = snap.docs.map((doc) => {
+            const d = doc.data() as {
+              title: string;
+              catId: CatId;
+              startAt: Timestamp;
+              endAt: Timestamp;
+              location?: string;
+              notes?: string;
+              canceled?: boolean;
+              externalId?: string | null;
+            };
+            return {
+              id: doc.id,
+              title: d.title,
+              start: chileLocalFromISO(d.startAt.toDate().toISOString()),
+              end: chileLocalFromISO(d.endAt.toDate().toISOString()),
+              catId: d.catId,
+              location: d.location ?? "",
+              notes: d.notes ?? "",
+              canceled: d.canceled ?? false,
+              externalId: d.externalId ?? null,
+            };
+          });
+          setEvents(list);
+        },
+        (err) => {
+          // Permission denied = la sesión perdió acceso (revocado, etc.)
+          if (err.code === "permission-denied") {
+            router.push("/login?error=no-autorizado");
+          } else {
+            console.error("Live sync error:", err);
+          }
+        },
+      );
+    });
+
+    return () => {
+      unsubAuth();
+      if (unsubEvents) unsubEvents();
+    };
+  }, [role, router]);
 
   const handleRange = useCallback((r: { start: Date; end: Date }, v: string) => {
     setRange(r);

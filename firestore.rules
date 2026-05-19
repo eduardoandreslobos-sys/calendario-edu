@@ -3,15 +3,38 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Tu doc de usuario (perfil + tokens Google). Solo el dueño lee.
-    // Los tokens se escriben SOLO desde el server (admin SDK los bypassea).
-    match /users/{uid} {
-      allow read: if request.auth != null && request.auth.uid == uid;
+    function userEmail() {
+      return request.auth.token.email;
+    }
+
+    function calendarDoc(calId) {
+      return get(/databases/$(database)/documents/calendars/$(calId)).data;
+    }
+
+    function isAuthorized(calId) {
+      return request.auth != null && (
+        calendarDoc(calId).ownerEmail == userEmail() ||
+        userEmail() in calendarDoc(calId).collaborators
+      );
+    }
+
+    // Calendario compartido: owner + colaboradores leen. Escritura solo server (admin).
+    match /calendars/{calId} {
+      allow read: if request.auth != null && (
+        resource.data.ownerEmail == userEmail() ||
+        userEmail() in resource.data.collaborators
+      );
       allow write: if false;
     }
 
-    // Los eventos también solo los lee el dueño; mutaciones via Server Actions (admin).
-    match /users/{uid}/events/{eventId} {
+    // Eventos del calendario: hereda permisos del calendario padre.
+    match /calendars/{calId}/events/{eventId} {
+      allow read: if isAuthorized(calId);
+      allow write: if false;
+    }
+
+    // User docs (perfil + tokens Google). Solo el dueño lee.
+    match /users/{uid} {
       allow read: if request.auth != null && request.auth.uid == uid;
       allow write: if false;
     }
