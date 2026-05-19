@@ -61,6 +61,12 @@ const santanderGrupoABDates = [
 const herramientasDates = ["2026-05-26","2026-05-28","2026-06-02","2026-06-04"];
 
 // ──────────────────────────────────────────────────────────────────────────
+// UAI Postgrado · Herramientas IA Productividad — 2da edición (4 sesiones · Ma+Ju 17:00–21:00)
+// Coordinadora: Antares Luque Vergara (Educación Ejecutiva).
+// ──────────────────────────────────────────────────────────────────────────
+const herramientasJunDates = ["2026-06-23","2026-06-25","2026-06-30","2026-07-02"];
+
+// ──────────────────────────────────────────────────────────────────────────
 // UAI FIC · Sistemas de Información (10 sesiones · Ju 08:30–11:10)
 // ──────────────────────────────────────────────────────────────────────────
 const sistInfoDates = [
@@ -196,6 +202,16 @@ export const EVENTS: CalEvent[] = [
       d, "18:00", "22:00",
       "En vivo · Zoom",
       `Clase ${i + 1} de 4`,
+    ),
+  ),
+  ...herramientasJunDates.map((d, i) =>
+    ev(
+      `herramientas-jun-${i + 1}`,
+      "uai_postgrado",
+      "Herramientas IA para la Productividad Profesional",
+      d, "17:00", "21:00",
+      "En vivo · Zoom",
+      `Clase ${i + 1} de 4 · 2da edición · Coord. Antares Luque Vergara`,
     ),
   ),
   ev(
