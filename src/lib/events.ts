@@ -45,14 +45,18 @@ const santanderDates = [
 ];
 
 // ──────────────────────────────────────────────────────────────────────────
-// FEN UChile · Santander Grupos A y B (12 sesiones c/u · L+Mi · 3 ago – 9 sept 2026)
-// Propuesta enviada a Raysa, pendiente confirmación.
-// Mismo curso Ing. de Prompts (24h c/u) para audiencias adicionales del banco.
+// FEN UChile · Santander grupos adicionales — versión 3h (reemplaza Grupos A+B)
+// Mismo curso Ing. de Prompts (24h c/u) en 8 sesiones de 3h.
+//   · Grupo 1 · Junio · Online · Mar+Jue 14:00-17:00 (salta jue 11 jun por HC inaug)
+//   · Grupo 2 · Agosto · Presencial · Lun+Mié 14:00-17:00
 // ──────────────────────────────────────────────────────────────────────────
-const santanderGrupoABDates = [
+const santanderJunDates = [
+  "2026-06-02","2026-06-04","2026-06-09","2026-06-16",
+  "2026-06-18","2026-06-23","2026-06-25","2026-06-30",
+];
+const santanderAgoDates = [
   "2026-08-03","2026-08-05","2026-08-10","2026-08-12",
   "2026-08-17","2026-08-19","2026-08-24","2026-08-26",
-  "2026-08-31","2026-09-02","2026-09-07","2026-09-09",
 ];
 
 // ──────────────────────────────────────────────────────────────────────────
@@ -174,24 +178,24 @@ export const EVENTS: CalEvent[] = [
       `Sesión ${i + 1} de 12 · Coord. Nataly Rengifo Torres`,
     ),
   ),
-  ...santanderGrupoABDates.map((d, i) =>
+  ...santanderJunDates.map((d, i) =>
     ev(
-      `santander-a-${i + 1}`,
+      `santander-jun-${i + 1}`,
       "fen_santander",
-      "Ing. de Prompts — Santander · Grupo A",
-      d, "09:00", "11:00",
-      "En vivo · MS Teams",
-      `Sesión ${i + 1} de 12 · Grupo A · Propuesta enviada a Raysa, pendiente confirmación`,
+      "Ing. de Prompts — Santander · Grupo Junio",
+      d, "14:00", "17:00",
+      "Online · MS Teams",
+      `Sesión ${i + 1} de 8 · Grupo Junio (online) · Coord. Raysa Castillo`,
     ),
   ),
-  ...santanderGrupoABDates.map((d, i) =>
+  ...santanderAgoDates.map((d, i) =>
     ev(
-      `santander-b-${i + 1}`,
+      `santander-ago-${i + 1}`,
       "fen_santander",
-      "Ing. de Prompts — Santander · Grupo B",
-      d, "11:30", "13:30",
-      "En vivo · MS Teams",
-      `Sesión ${i + 1} de 12 · Grupo B · Propuesta enviada a Raysa, pendiente confirmación`,
+      "Ing. de Prompts — Santander · Grupo Agosto",
+      d, "14:00", "17:00",
+      "Presencial · sede por confirmar (FEN o Casa Matriz)",
+      `Sesión ${i + 1} de 8 · Grupo Agosto (presencial) · Coord. Raysa Castillo`,
     ),
   ),
   ...herramientasDates.map((d, i) =>
@@ -221,6 +225,14 @@ export const EVENTS: CalEvent[] = [
     "2026-05-27", "08:00", "18:00",
     "Presencial · UAI Corporate",
     "Jornada completa · UAI Corporate",
+  ),
+  ev(
+    "latam-discovery-may26",
+    "personal",
+    "Reunión LATAM · Giselle Perey",
+    "2026-05-26", "17:00", "18:00",
+    "Online · por confirmar",
+    "Discovery training IA · VP Personas LATAM · OJO cortar 17:55 sí o sí para alcanzar Herramientas IA UAI 18:00",
   ),
   ...sistInfoDates.map((d, i) =>
     ev(
