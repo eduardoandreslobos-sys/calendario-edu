@@ -272,6 +272,7 @@ body {
 .cat-fen_santander.fc-timegrid-event { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important; border-left: 3px solid #991b1b !important; }
 .cat-fen_hc.fc-timegrid-event        { background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%) !important; border-left: 3px solid #9f1239 !important; }
 .cat-fen_basica.fc-timegrid-event    { background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%) !important; border-left: 3px solid #115e59 !important; }
+.cat-muni_florida.fc-timegrid-event  { background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%) !important; border-left: 3px solid #155e75 !important; }
 .cat-geforce.fc-timegrid-event       { background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important; border-left: 3px solid #065f46 !important; }
 .cat-nodo.fc-timegrid-event          { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important; border-left: 3px solid #92400e !important; }
 .cat-personal.fc-timegrid-event      { background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%) !important; border-left: 3px solid #374151 !important; }

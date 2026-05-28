@@ -234,6 +234,24 @@ export const EVENTS: CalEvent[] = [
     "Online · por confirmar",
     "Discovery training IA · VP Personas LATAM · OJO cortar 17:55 sí o sí para alcanzar Herramientas IA UAI 18:00",
   ),
+  // Muni La Florida · Herramientas IA Productividad · L+Mi 15:00–18:15 · 16h · remoto Zoom
+  // Salta lun 29 jun (festivo San Pedro y San Pablo). Última sesión cierra 18:00.
+  ...[
+    { date: "2026-06-15", end: "18:15" },
+    { date: "2026-06-17", end: "18:15" },
+    { date: "2026-06-22", end: "18:15" },
+    { date: "2026-06-24", end: "18:15" },
+    { date: "2026-07-01", end: "18:00" },
+  ].map((s, i) =>
+    ev(
+      `florida-${i + 1}`,
+      "muni_florida",
+      "Herramientas IA — Muni La Florida",
+      s.date, "15:00", s.end,
+      "En vivo · Zoom",
+      `Sesión ${i + 1} de 5 · Muni La Florida (remoto) · Coord. Raysa Castillo`,
+    ),
+  ),
   ...sistInfoDates.map((d, i) =>
     ev(
       `sistinfo-${i + 1}`,
