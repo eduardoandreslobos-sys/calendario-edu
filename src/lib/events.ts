@@ -46,7 +46,7 @@ const santanderDates = [
 
 // ──────────────────────────────────────────────────────────────────────────
 // FEN UChile · Santander grupo adicional · Agosto presencial (3h × 8 sesiones)
-// El grupo de junio fue rechazado por Raysa (mayo 2026); solo queda agosto.
+// CONFIRMADO por Raysa. (El grupo de junio fue rechazado.)
 // Mismo curso Ing. de Prompts (24h) en 8 sesiones de 3h, Lun+Mié 14-17.
 // ──────────────────────────────────────────────────────────────────────────
 const santanderAgoDates = [
@@ -186,7 +186,7 @@ export const EVENTS: CalEvent[] = [
       "Ing. de Prompts — Santander · Grupo Agosto",
       d, "14:00", "17:00",
       "Presencial · sede por confirmar (FEN o Casa Matriz)",
-      `Sesión ${i + 1} de 8 · Grupo Agosto (presencial) · Coord. Raysa Castillo`,
+      `Sesión ${i + 1} de 8 · Grupo Agosto (presencial · confirmado) · Coord. Raysa Castillo`,
     ),
   ),
   ...herramientasDates.map((d, i) =>
