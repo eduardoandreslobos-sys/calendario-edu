@@ -45,15 +45,10 @@ const santanderDates = [
 ];
 
 // ──────────────────────────────────────────────────────────────────────────
-// FEN UChile · Santander grupos adicionales — versión 3h (reemplaza Grupos A+B)
-// Mismo curso Ing. de Prompts (24h c/u) en 8 sesiones de 3h.
-//   · Grupo 1 · Junio · Online · Mar+Jue 14:00-17:00 (salta jue 11 jun por HC inaug)
-//   · Grupo 2 · Agosto · Presencial · Lun+Mié 14:00-17:00
+// FEN UChile · Santander grupo adicional · Agosto presencial (3h × 8 sesiones)
+// El grupo de junio fue rechazado por Raysa (mayo 2026); solo queda agosto.
+// Mismo curso Ing. de Prompts (24h) en 8 sesiones de 3h, Lun+Mié 14-17.
 // ──────────────────────────────────────────────────────────────────────────
-const santanderJunDates = [
-  "2026-06-02","2026-06-04","2026-06-09","2026-06-16",
-  "2026-06-18","2026-06-23","2026-06-25","2026-06-30",
-];
 const santanderAgoDates = [
   "2026-08-03","2026-08-05","2026-08-10","2026-08-12",
   "2026-08-17","2026-08-19","2026-08-24","2026-08-26",
@@ -182,16 +177,6 @@ export const EVENTS: CalEvent[] = [
       d, "11:30", "13:30",
       "En vivo · MS Teams",
       `Sesión ${i + 1} de 12 · Coord. Nataly Rengifo Torres`,
-    ),
-  ),
-  ...santanderJunDates.map((d, i) =>
-    ev(
-      `santander-jun-${i + 1}`,
-      "fen_santander",
-      "Ing. de Prompts — Santander · Grupo Junio",
-      d, "14:00", "17:00",
-      "Online · MS Teams",
-      `Sesión ${i + 1} de 8 · Grupo Junio (online) · Coord. Raysa Castillo`,
     ),
   ),
   ...santanderAgoDates.map((d, i) =>
