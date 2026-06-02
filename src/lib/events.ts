@@ -235,6 +235,14 @@ export const EVENTS: CalEvent[] = [
     "Online · por confirmar",
     "Discovery training IA · VP Personas LATAM · OJO cortar 17:55 sí o sí para alcanzar Herramientas IA UAI 18:00",
   ),
+  ev(
+    "cine-diablo-jun3",
+    "personal",
+    "Cine con Cata · El Diablo Viste a la Moda 2",
+    "2026-06-03", "20:30", "22:30",
+    "Cinemark Alto Las Condes · Sala 1 Premier · Butacas G-10, G-11 · Av. Kennedy 9001, Local 3092",
+    "Código retiro: WJQTJWW · Pre NT SUB · pagado con tarjeta ($12.800)",
+  ),
   // Muni La Florida · Herramientas IA Productividad · L+Mi 15:00–18:15 · 16h · remoto Zoom
   // Salta lun 29 jun (festivo San Pedro y San Pablo). Última sesión cierra 18:00.
   ...[
