@@ -243,6 +243,14 @@ export const EVENTS: CalEvent[] = [
     "Cinemark Alto Las Condes · Sala 1 Premier · Butacas G-10, G-11 · Av. Kennedy 9001, Local 3092",
     "Código retiro: WJQTJWW · Pre NT SUB · pagado con tarjeta ($12.800)",
   ),
+  ev(
+    "psiquiatra-tomas-jun8",
+    "personal",
+    "Tomás Charlin · psiquiatra",
+    "2026-06-08", "16:00", "17:00",
+    "Por confirmar",
+    "Sesión psiquiátrica · 1 hora",
+  ),
   // Muni La Florida · Herramientas IA Productividad · L+Mi 15:00–18:15 · 16h · remoto Zoom
   // Salta lun 29 jun (festivo San Pedro y San Pablo). Última sesión cierra 18:00.
   ...[
