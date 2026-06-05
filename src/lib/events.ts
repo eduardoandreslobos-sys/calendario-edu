@@ -81,91 +81,6 @@ const sistInfoDates = [
 ];
 
 // ──────────────────────────────────────────────────────────────────────────
-// Diplomados FEN · Control de Gestión Educacional (18 sesiones c/u)
-//   S1 presencial (jornada completa 09:00–17:00)
-//   S2–S17: 16 viernes en vivo
-//   S18 presencial (cierre, jornada completa)
-//   Salta viernes 18 sep (Fiestas Patrias).
-// ──────────────────────────────────────────────────────────────────────────
-const diplomaFridaysVivo = [
-  "2026-06-19","2026-06-26","2026-07-03","2026-07-10","2026-07-17","2026-07-24","2026-07-31","2026-08-07",
-  "2026-08-14","2026-08-21","2026-08-28","2026-09-04","2026-09-11","2026-09-25","2026-10-02","2026-10-09",
-];
-
-interface DiplomaOpts {
-  catId: CatId;
-  prefix: string;
-  title: string;
-  vivoStart: string;
-  vivoEnd: string;
-  s1Date: string;
-  s18Date: string;
-  locationPresencial: string;
-  locationVivo: string;
-}
-
-function diploma(opts: DiplomaOpts): CalEvent[] {
-  const out: CalEvent[] = [];
-  out.push(
-    ev(
-      `${opts.prefix}-1`,
-      opts.catId,
-      opts.title,
-      opts.s1Date, "09:00", "17:00",
-      opts.locationPresencial,
-      "Sesión 1 de 18 · Módulo 1 · Inauguración presencial",
-    ),
-  );
-  diplomaFridaysVivo.forEach((d, i) => {
-    const num = i + 2;
-    const mod = num <= 9 ? 1 : 2;
-    out.push(
-      ev(
-        `${opts.prefix}-${num}`,
-        opts.catId,
-        opts.title,
-        d, opts.vivoStart, opts.vivoEnd,
-        opts.locationVivo,
-        `Sesión ${num} de 18 · Módulo ${mod}`,
-      ),
-    );
-  });
-  out.push(
-    ev(
-      `${opts.prefix}-18`,
-      opts.catId,
-      opts.title,
-      opts.s18Date, "09:00", "17:00",
-      opts.locationPresencial,
-      "Sesión 18 de 18 · Módulo 2 · Cierre presencial",
-    ),
-  );
-  return out;
-}
-
-const diplomaHC = diploma({
-  catId: "fen_hc",
-  prefix: "fen-hc",
-  title: "Diplomado Control de Gestión · Educación HC",
-  vivoStart: "14:00", vivoEnd: "17:00",
-  s1Date: "2026-06-11",  // jueves
-  s18Date: "2026-10-15", // jueves
-  locationPresencial: "Presencial · SLEP (dirección por confirmar)",
-  locationVivo: "En vivo · MS Teams",
-});
-
-const diplomaBasica = diploma({
-  catId: "fen_basica",
-  prefix: "fen-basica",
-  title: "Diplomado Control de Gestión · Educación Básica",
-  vivoStart: "10:00", vivoEnd: "13:00",
-  s1Date: "2026-06-12",  // viernes
-  s18Date: "2026-10-16", // viernes
-  locationPresencial: "Presencial · SLEP (dirección por confirmar)",
-  locationVivo: "En vivo · MS Teams",
-});
-
-// ──────────────────────────────────────────────────────────────────────────
 // All events
 // ──────────────────────────────────────────────────────────────────────────
 export const EVENTS: CalEvent[] = [
@@ -271,8 +186,6 @@ export const EVENTS: CalEvent[] = [
       `Sesión ${i + 1} de 10 · Ing. Civil 4° año`,
     ),
   ),
-  ...diplomaHC,
-  ...diplomaBasica,
 ];
 
 export function calcTotals(events: CalEvent[]) {

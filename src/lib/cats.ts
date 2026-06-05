@@ -32,8 +32,6 @@ export const CAT_ORDER: CatId[] = [
   "uai_postgrado",
   "uai_fic",
   "fen_santander",
-  "fen_hc",
-  "fen_basica",
   "muni_florida",
   "geforce",
   "nodo",
