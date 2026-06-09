@@ -45,13 +45,16 @@ const santanderDates = [
 ];
 
 // ──────────────────────────────────────────────────────────────────────────
-// FEN UChile · Santander grupo adicional · Agosto presencial (3h × 8 sesiones)
-// CONFIRMADO por Raysa. (El grupo de junio fue rechazado.)
-// Mismo curso Ing. de Prompts (24h) en 8 sesiones de 3h, Lun+Mié 14-17.
+// FEN UChile · Santander · 2 cursos paralelos Ing. de Prompts (24h c/u)
+// Calendarios oficiales de Raysa (Calendario 2 ONLINE + Calendario 3 PRESENCIAL).
+// 12 sesiones × 2h cada uno · Lun+Mié · 3 ago – 9 sep 2026.
+//   · ONLINE     · 09:00–11:00 · MS Teams
+//   · PRESENCIAL · 11:30–13:30 · dependencias Banco Santander
 // ──────────────────────────────────────────────────────────────────────────
 const santanderAgoDates = [
   "2026-08-03","2026-08-05","2026-08-10","2026-08-12",
   "2026-08-17","2026-08-19","2026-08-24","2026-08-26",
+  "2026-08-31","2026-09-02","2026-09-07","2026-09-09",
 ];
 
 // ──────────────────────────────────────────────────────────────────────────
@@ -96,12 +99,22 @@ export const EVENTS: CalEvent[] = [
   ),
   ...santanderAgoDates.map((d, i) =>
     ev(
-      `santander-ago-${i + 1}`,
+      `santander-online-${i + 1}`,
       "fen_santander",
-      "Ing. de Prompts — Santander · Grupo Agosto",
-      d, "14:00", "17:00",
-      "Presencial · sede por confirmar (FEN o Casa Matriz)",
-      `Sesión ${i + 1} de 8 · Grupo Agosto (presencial · confirmado) · Coord. Raysa Castillo`,
+      "Ing. de Prompts — Santander · Online",
+      d, "09:00", "11:00",
+      "En vivo · MS Teams",
+      `Sesión ${i + 1} de 12 · Grupo Online · Coord. Raysa Castillo`,
+    ),
+  ),
+  ...santanderAgoDates.map((d, i) =>
+    ev(
+      `santander-presencial-${i + 1}`,
+      "fen_santander",
+      "Ing. de Prompts — Santander · Presencial",
+      d, "11:30", "13:30",
+      "Presencial · dependencias Banco Santander (dirección por definir)",
+      `Sesión ${i + 1} de 12 · Grupo Presencial · Coord. Raysa Castillo`,
     ),
   ),
   ...herramientasDates.map((d, i) =>
