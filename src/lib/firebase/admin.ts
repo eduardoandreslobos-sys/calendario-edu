@@ -13,14 +13,18 @@ function getApp(): App {
     return _app;
   }
 
-  // En App Hosting / Cloud Run / GCE: ADC automático.
-  // Localmente con GOOGLE_APPLICATION_CREDENTIALS apuntando a un service account JSON.
   const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID ?? "nodo-build";
 
-  _app = initializeApp({
-    credential: applicationDefault(),
-    projectId,
-  });
+  // Vercel / cualquier host fuera de GCP: service account JSON en base64 via env.
+  // Cloud Run / GCE / App Hosting / local con gcloud: ADC automático (fallback).
+  const saB64 = process.env.FIREBASE_SERVICE_ACCOUNT_B64;
+  if (saB64) {
+    const json = JSON.parse(Buffer.from(saB64, "base64").toString("utf8"));
+    _app = initializeApp({ credential: cert(json), projectId });
+    return _app;
+  }
+
+  _app = initializeApp({ credential: applicationDefault(), projectId });
   return _app;
 }
 
