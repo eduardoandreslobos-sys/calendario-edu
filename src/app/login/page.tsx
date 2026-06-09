@@ -5,16 +5,15 @@ import { LoginForm } from "@/components/sections/LoginForm";
 export const metadata = { title: "Entrar · Calendario Edu" };
 
 const ERROR_MESSAGES: Record<string, string> = {
-  "no-autorizado":
-    "Tu correo no está autorizado para usar este calendario. Es de uso personal.",
+  "link-invalido": "El enlace venció o no es válido. Pide uno nuevo.",
 };
 
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ next?: string; error?: string }>;
+  searchParams: Promise<{ error?: string }>;
 }) {
-  const { next, error } = await searchParams;
+  const { error } = await searchParams;
   const errorMessage = error ? ERROR_MESSAGES[error] ?? null : null;
 
   return (
@@ -30,14 +29,14 @@ export default async function LoginPage({
             Entra a tu calendario
           </h1>
           <p className="font-serif italic text-[15px] text-[color:var(--color-text-soft)] mb-7">
-            Solo el dueño del calendario puede acceder.
+            Te enviamos un enlace de acceso a tu correo.
           </p>
           {errorMessage && (
             <p className="mb-4 text-[13px] text-red-700 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
               {errorMessage}
             </p>
           )}
-          <LoginForm next={next} />
+          <LoginForm />
         </div>
       </main>
     </>

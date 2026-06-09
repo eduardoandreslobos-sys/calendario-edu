@@ -1,18 +1,17 @@
 import { Reveal } from "@/components/effects/Reveal";
 import { SplitReveal } from "@/components/effects/SplitReveal";
 import { fmtHours } from "@/lib/format";
-import type { Role } from "@/lib/calendar-access";
+import type { Role } from "@/lib/auth";
 
 interface Props {
   totals: { sessions: number; hours: number; courses: number };
   userEmail?: string | null;
   role?: Role | null;
-  googleConnected?: boolean;
 }
 
-export function Header({ totals, userEmail, role, googleConnected }: Props) {
+export function Header({ totals, userEmail, role }: Props) {
   const roleBadge =
-    role === "owner" ? "Dueño" : role === "editor" ? "Editor" : role === "viewer" ? "Lectura" : null;
+    role === "owner" ? "Dueño" : role === "viewer" ? "Lectura" : null;
 
   return (
     <header className="mb-[clamp(28px,4vw,48px)] flex items-start justify-between gap-6 flex-wrap">
@@ -51,15 +50,6 @@ export function Header({ totals, userEmail, role, googleConnected }: Props) {
       {userEmail && (
         <Reveal delay={0.6} y={10} duration={0.7}>
           <div className="flex items-center gap-2 flex-wrap">
-            {googleConnected && (
-              <span
-                title="Sincronizado con Google Calendar"
-                className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 border border-emerald-200 px-2.5 py-1 text-[11px] font-mono font-medium uppercase tracking-[0.08em] text-emerald-800"
-              >
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                Google Cal
-              </span>
-            )}
             {roleBadge && (
               <span className="rounded-full bg-zinc-900 text-white px-2.5 py-1 text-[10.5px] font-bold uppercase tracking-[0.05em]">
                 {roleBadge}

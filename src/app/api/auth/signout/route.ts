@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { SESSION_COOKIE } from "@/lib/firebase/admin";
+import { SESSION_COOKIE } from "@/lib/auth";
 
 export async function POST(request: Request) {
   const res = NextResponse.redirect(new URL("/login", request.url), { status: 303 });
