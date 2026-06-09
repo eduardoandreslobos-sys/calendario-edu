@@ -1,5 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { isAllowed, signMagicToken } from "@/lib/auth";
+import { signMagicToken } from "@/lib/auth";
+import { isAllowed } from "@/lib/access";
 import { sendMagicLink } from "@/lib/email";
 
 export async function POST(req: NextRequest) {
@@ -13,12 +14,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Falta el correo" }, { status: 400 });
   }
 
-  // No revelamos si el correo está o no autorizado (anti-enumeración):
-  // siempre respondemos ok, pero solo enviamos si está en la allowlist.
-  if (isAllowed(email)) {
+  // Anti-enumeración: siempre ok, pero solo enviamos si está autorizado.
+  if (await isAllowed(email)) {
     try {
-      const origin =
-        process.env.NEXT_PUBLIC_SITE_URL ?? new URL(req.url).origin;
+      const origin = process.env.NEXT_PUBLIC_SITE_URL ?? new URL(req.url).origin;
       const token = await signMagicToken(email);
       const link = `${origin}/api/auth/callback?token=${encodeURIComponent(token)}`;
       await sendMagicLink(email, link);

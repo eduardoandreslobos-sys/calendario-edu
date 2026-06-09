@@ -11,7 +11,7 @@ interface Props {
 
 export function Header({ totals, userEmail, role }: Props) {
   const roleBadge =
-    role === "owner" ? "Dueño" : role === "viewer" ? "Lectura" : null;
+    role === "owner" ? "Dueño" : role === "editor" ? "Editor" : role === "viewer" ? "Lectura" : null;
 
   return (
     <header className="mb-[clamp(28px,4vw,48px)] flex items-start justify-between gap-6 flex-wrap">

@@ -1,20 +1,17 @@
 import { type NextRequest, NextResponse } from "next/server";
-import {
-  verifyToken,
-  signSessionToken,
-  SESSION_COOKIE,
-  SESSION_MAX_AGE,
-} from "@/lib/auth";
+import { verifyMagic, signSessionToken, SESSION_COOKIE, SESSION_MAX_AGE } from "@/lib/auth";
+import { roleForEmail } from "@/lib/access";
 
 export async function GET(req: NextRequest) {
   const token = new URL(req.url).searchParams.get("token") ?? undefined;
-  const verified = await verifyToken(token, "magic");
+  const magic = await verifyMagic(token);
+  const role = magic ? await roleForEmail(magic.email) : null;
 
-  if (!verified) {
+  if (!magic || !role) {
     return NextResponse.redirect(new URL("/login?error=link-invalido", req.url));
   }
 
-  const session = await signSessionToken(verified.email);
+  const session = await signSessionToken(magic.email, role);
   const res = NextResponse.redirect(new URL("/", req.url));
   res.cookies.set({
     name: SESSION_COOKIE,
