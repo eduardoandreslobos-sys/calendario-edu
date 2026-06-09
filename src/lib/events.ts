@@ -103,8 +103,8 @@ export const EVENTS: CalEvent[] = [
       "fen_santander",
       "Ing. de Prompts — Santander · Online",
       d, "09:00", "11:00",
-      "En vivo · MS Teams",
-      `Sesión ${i + 1} de 12 · Grupo Online · Coord. Raysa Castillo`,
+      "En vivo · MS Teams (desde sala habilitada en Banco Santander)",
+      `Sesión ${i + 1} de 12 · Grupo Online · se dicta desde Santander · Coord. Raysa Castillo`,
     ),
   ),
   ...santanderAgoDates.map((d, i) =>
