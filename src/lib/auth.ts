@@ -16,15 +16,6 @@ function secret(): Uint8Array {
   return new TextEncoder().encode(s);
 }
 
-export async function signMagicToken(email: string): Promise<string> {
-  return new SignJWT({ email: email.toLowerCase(), kind: "magic" })
-    .setProtectedHeader({ alg: "HS256" })
-    .setIssuer(ISSUER)
-    .setIssuedAt()
-    .setExpirationTime("15m")
-    .sign(secret());
-}
-
 export async function signSessionToken(email: string, role: Role): Promise<string> {
   return new SignJWT({ email: email.toLowerCase(), role, kind: "session" })
     .setProtectedHeader({ alg: "HS256" })
@@ -37,17 +28,6 @@ export async function signSessionToken(email: string, role: Role): Promise<strin
 export interface Session {
   email: string;
   role: Role;
-}
-
-export async function verifyMagic(token: string | undefined): Promise<{ email: string } | null> {
-  if (!token) return null;
-  try {
-    const { payload } = await jwtVerify(token, secret(), { issuer: ISSUER });
-    if (payload.kind !== "magic" || typeof payload.email !== "string") return null;
-    return { email: payload.email };
-  } catch {
-    return null;
-  }
 }
 
 export async function verifySession(token: string | undefined): Promise<Session | null> {

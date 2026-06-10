@@ -4,18 +4,7 @@ import { LoginForm } from "@/components/sections/LoginForm";
 
 export const metadata = { title: "Entrar · Calendario Edu" };
 
-const ERROR_MESSAGES: Record<string, string> = {
-  "link-invalido": "El enlace venció o no es válido. Pide uno nuevo.",
-};
-
-export default async function LoginPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ error?: string }>;
-}) {
-  const { error } = await searchParams;
-  const errorMessage = error ? ERROR_MESSAGES[error] ?? null : null;
-
+export default function LoginPage() {
   return (
     <>
       <MeshBg />
@@ -29,13 +18,8 @@ export default async function LoginPage({
             Entra a tu calendario
           </h1>
           <p className="font-serif italic text-[15px] text-[color:var(--color-text-soft)] mb-7">
-            Te enviamos un enlace de acceso a tu correo.
+            Ingresa con tu correo y contraseña.
           </p>
-          {errorMessage && (
-            <p className="mb-4 text-[13px] text-red-700 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
-              {errorMessage}
-            </p>
-          )}
           <LoginForm />
         </div>
       </main>
