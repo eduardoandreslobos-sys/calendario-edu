@@ -5,7 +5,7 @@ import { z } from "zod";
 import { sql } from "@/lib/db";
 import { requireOwner } from "@/lib/access";
 
-const OWNER_EMAIL = "eduardoandres.lobos@gmail.com";
+const OWNER_EMAIL = "eloboss@fen.uchile.cl";
 
 const addSchema = z.object({
   email: z.string().email().transform((s) => s.toLowerCase().trim()),

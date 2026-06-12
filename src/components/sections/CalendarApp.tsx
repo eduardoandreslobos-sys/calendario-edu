@@ -168,7 +168,7 @@ export function CalendarApp({ initialEvents, role, collaborators }: Props) {
         <ShareModal
           open={shareOpen}
           onClose={() => setShareOpen(false)}
-          ownerEmail="eduardoandres.lobos@gmail.com"
+          ownerEmail="eloboss@fen.uchile.cl"
           collaborators={collaborators.filter((c) => c.role !== "owner")}
         />
       )}
