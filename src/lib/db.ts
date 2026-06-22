@@ -9,8 +9,10 @@ declare global {
 function make() {
   const url = process.env.DATABASE_URL;
   if (!url) throw new Error("DATABASE_URL no configurado");
+  // SSL solo si la URL lo pide (conexión interna por docker network no usa TLS).
+  const useSsl = /sslmode=require/.test(url);
   return postgres(url, {
-    ssl: { rejectUnauthorized: false },
+    ssl: useSsl ? { rejectUnauthorized: false } : false,
     max: 5,
     idle_timeout: 20,
     connect_timeout: 15,
