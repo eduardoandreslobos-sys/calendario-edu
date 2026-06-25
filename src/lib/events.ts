@@ -75,6 +75,11 @@ const herramientasJunDates = ["2026-06-23","2026-06-25","2026-06-30","2026-07-02
 const claudeCodeDates = ["2026-08-04","2026-08-06","2026-08-11","2026-08-13"];
 
 // ──────────────────────────────────────────────────────────────────────────
+// UAI Postgrado · Herramientas IA Productividad — 3ra edición (4 sesiones · Ma+Ju 18:00–22:00)
+// ──────────────────────────────────────────────────────────────────────────
+const herramientasAgoDates = ["2026-08-18","2026-08-20","2026-08-25","2026-08-27"];
+
+// ──────────────────────────────────────────────────────────────────────────
 // UAI FIC · Sistemas de Información (10 sesiones · Ju 08:30–11:10)
 // ──────────────────────────────────────────────────────────────────────────
 const sistInfoDates = [
@@ -145,6 +150,16 @@ export const EVENTS: CalEvent[] = [
       d, "18:00", "22:00",
       "En vivo · Zoom",
       `Clase ${i + 1} de 4 · Coord. Antares Luque Vergara`,
+    ),
+  ),
+  ...herramientasAgoDates.map((d, i) =>
+    ev(
+      `herramientas-ago-${i + 1}`,
+      "uai_postgrado",
+      "Herramientas IA para la Productividad Profesional",
+      d, "18:00", "22:00",
+      "En vivo · Zoom",
+      `Clase ${i + 1} de 4 · UAI Postgrado`,
     ),
   ),
   ev(
