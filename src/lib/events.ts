@@ -45,19 +45,6 @@ const santanderDates = [
 ];
 
 // ──────────────────────────────────────────────────────────────────────────
-// FEN UChile · Santander · 2 cursos paralelos Ing. de Prompts (24h c/u)
-// Calendarios oficiales de Raysa (Calendario 2 ONLINE + Calendario 3 PRESENCIAL).
-// 12 sesiones × 2h cada uno · Lun+Mié · 3 ago – 9 sep 2026.
-//   · ONLINE     · 09:00–11:00 · MS Teams
-//   · PRESENCIAL · 11:30–13:30 · dependencias Banco Santander
-// ──────────────────────────────────────────────────────────────────────────
-const santanderAgoDates = [
-  "2026-08-03","2026-08-05","2026-08-10","2026-08-12",
-  "2026-08-17","2026-08-19","2026-08-24","2026-08-26",
-  "2026-08-31","2026-09-02","2026-09-07","2026-09-09",
-];
-
-// ──────────────────────────────────────────────────────────────────────────
 // UAI Postgrado · Herramientas IA Productividad (4 sesiones · Ma+Ju 18:00–22:00)
 // ──────────────────────────────────────────────────────────────────────────
 const herramientasDates = ["2026-05-26","2026-05-28","2026-06-02","2026-06-04"];
@@ -100,26 +87,6 @@ export const EVENTS: CalEvent[] = [
       d, "11:30", "13:30",
       "En vivo · MS Teams",
       `Sesión ${i + 1} de 12 · Coord. Nataly Rengifo Torres`,
-    ),
-  ),
-  ...santanderAgoDates.map((d, i) =>
-    ev(
-      `santander-online-${i + 1}`,
-      "fen_santander",
-      "Ing. de Prompts — Santander · Online",
-      d, "09:00", "11:00",
-      "En vivo · MS Teams (desde sala habilitada en Banco Santander)",
-      `Sesión ${i + 1} de 12 · Grupo Online · se dicta desde Santander · Coord. Raysa Castillo`,
-    ),
-  ),
-  ...santanderAgoDates.map((d, i) =>
-    ev(
-      `santander-presencial-${i + 1}`,
-      "fen_santander",
-      "Ing. de Prompts — Santander · Presencial",
-      d, "11:30", "13:30",
-      "Presencial · dependencias Banco Santander (dirección por definir)",
-      `Sesión ${i + 1} de 12 · Grupo Presencial · Coord. Raysa Castillo`,
     ),
   ),
   ...herramientasDates.map((d, i) =>
