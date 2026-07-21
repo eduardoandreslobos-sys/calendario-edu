@@ -67,6 +67,12 @@ const claudeCodeDates = ["2026-08-04","2026-08-06","2026-08-11","2026-08-13"];
 const herramientasAgoDates = ["2026-08-18","2026-08-20","2026-08-25","2026-08-27"];
 
 // ──────────────────────────────────────────────────────────────────────────
+// UAI Postgrado · Claude Code & Design — 2da edición (4 sesiones · Ma+Ju 18:00–22:00)
+// Coordinadora: Antares Luque Vergara.
+// ──────────────────────────────────────────────────────────────────────────
+const claudeOctDates = ["2026-10-06","2026-10-08","2026-10-13","2026-10-15"];
+
+// ──────────────────────────────────────────────────────────────────────────
 // UAI FIC · Sistemas de Información (10 sesiones · Ju 08:30–11:10)
 // ──────────────────────────────────────────────────────────────────────────
 const sistInfoDates = [
@@ -127,6 +133,16 @@ export const EVENTS: CalEvent[] = [
       d, "18:00", "22:00",
       "En vivo · Zoom",
       `Clase ${i + 1} de 4 · UAI Postgrado`,
+    ),
+  ),
+  ...claudeOctDates.map((d, i) =>
+    ev(
+      `claude-oct-${i + 1}`,
+      "uai_postgrado",
+      "Claude Code & Design",
+      d, "18:00", "22:00",
+      "En vivo · Zoom",
+      `Clase ${i + 1} de 4 · 2da edición · Coord. Antares Luque Vergara`,
     ),
   ),
   ev(
