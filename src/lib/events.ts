@@ -67,7 +67,13 @@ const claudeCodeDates = ["2026-08-04","2026-08-06","2026-08-11","2026-08-13"];
 const herramientasAgoDates = ["2026-08-18","2026-08-20","2026-08-25","2026-08-27"];
 
 // ──────────────────────────────────────────────────────────────────────────
-// UAI Postgrado · Herramientas IA Productividad — 4ta edición (octubre)
+// UAI Postgrado · Herramientas IA Productividad — edición septiembre
+// 4 sesiones · Ma+Ju 18:00–22:00.
+// ──────────────────────────────────────────────────────────────────────────
+const herramientasSepDates = ["2026-09-01","2026-09-03","2026-09-08","2026-09-10"];
+
+// ──────────────────────────────────────────────────────────────────────────
+// UAI Postgrado · Herramientas IA Productividad — edición octubre
 // 4 sesiones · Ma+Ju 18:00–22:00.
 // ──────────────────────────────────────────────────────────────────────────
 const herramientasOctDates = ["2026-10-06","2026-10-08","2026-10-13","2026-10-15"];
@@ -141,6 +147,16 @@ export const EVENTS: CalEvent[] = [
       `Clase ${i + 1} de 4 · UAI Postgrado`,
     ),
   ),
+  ...herramientasSepDates.map((d, i) =>
+    ev(
+      `herramientas-sep-${i + 1}`,
+      "uai_postgrado",
+      "Herramientas IA para la Productividad Profesional",
+      d, "18:00", "22:00",
+      "En vivo · Zoom",
+      `Clase ${i + 1} de 4 · edición sep · UAI Postgrado`,
+    ),
+  ),
   ...herramientasOctDates.map((d, i) =>
     ev(
       `herramientas-oct-${i + 1}`,
@@ -148,7 +164,7 @@ export const EVENTS: CalEvent[] = [
       "Herramientas IA para la Productividad Profesional",
       d, "18:00", "22:00",
       "En vivo · Zoom",
-      `Clase ${i + 1} de 4 · UAI Postgrado`,
+      `Clase ${i + 1} de 4 · edición oct · UAI Postgrado`,
     ),
   ),
   ...claudeNovDates.map((d, i) =>
