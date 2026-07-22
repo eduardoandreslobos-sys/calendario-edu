@@ -177,6 +177,30 @@ export const EVENTS: CalEvent[] = [
       `Clase ${i + 1} de 4 · 2da edición · Coord. Antares Luque Vergara`,
     ),
   ),
+  // ──────────────────────────────────────────────────────────────────────────
+  // UAI Capacitación (Personas Viña · Gloria Arellano) — 6 viernes 09:00–13:00
+  // Área Comercial: presencial Sede Vitacura · Área Marketing: online Teams
+  // ──────────────────────────────────────────────────────────────────────────
+  ...(["2026-07-31","2026-08-07","2026-08-14"] as const).map((d, i) =>
+    ev(
+      `uai-cap-comercial-${i + 1}`,
+      "uai_capacitacion",
+      "UAI Capacitación · Área Comercial",
+      d, "09:00", "13:00",
+      "Presencial · Sede Vitacura",
+      `Clase ${i + 1} de 3 · Coord. Gloria Arellano (Personas Viña)`,
+    ),
+  ),
+  ...(["2026-08-21","2026-08-28","2026-09-04"] as const).map((d, i) =>
+    ev(
+      `uai-cap-marketing-${i + 1}`,
+      "uai_capacitacion",
+      "UAI Capacitación · Área Marketing",
+      d, "09:00", "13:00",
+      "Online · Teams",
+      `Clase ${i + 1} de 3 · Coord. Gloria Arellano (Personas Viña)`,
+    ),
+  ),
   ev(
     "ia-negocios",
     "uai_postgrado",

@@ -1,6 +1,7 @@
 export type CatId =
   | "uai_postgrado"
   | "uai_fic"
+  | "uai_capacitacion"
   | "fen_santander"
   | "fen_hc"
   | "fen_basica"
@@ -17,8 +18,9 @@ export interface Cat {
 }
 
 export const CATS: Record<CatId, Cat> = {
-  uai_postgrado: { name: "UAI Postgrado",         dot: "#2563eb", bg: "#dbeafe", text: "#1e40af" },
-  uai_fic:       { name: "UAI FIC",               dot: "#7c3aed", bg: "#ede9fe", text: "#5b21b6" },
+  uai_postgrado:    { name: "UAI Postgrado",         dot: "#2563eb", bg: "#dbeafe", text: "#1e40af" },
+  uai_fic:          { name: "UAI FIC",               dot: "#7c3aed", bg: "#ede9fe", text: "#5b21b6" },
+  uai_capacitacion: { name: "UAI Capacitación",      dot: "#4f46e5", bg: "#e0e7ff", text: "#3730a3" },
   fen_santander: { name: "Santander (FEN)",       dot: "#dc2626", bg: "#fee2e2", text: "#991b1b" },
   fen_hc:        { name: "Diplomado HC (FEN)",    dot: "#e11d48", bg: "#ffe4e6", text: "#9f1239" },
   fen_basica:    { name: "Diplomado Básica (FEN)",dot: "#0d9488", bg: "#ccfbf1", text: "#115e59" },
@@ -31,6 +33,7 @@ export const CATS: Record<CatId, Cat> = {
 export const CAT_ORDER: CatId[] = [
   "uai_postgrado",
   "uai_fic",
+  "uai_capacitacion",
   "fen_santander",
   "muni_florida",
   "geforce",
