@@ -178,29 +178,17 @@ export const EVENTS: CalEvent[] = [
     ),
   ),
   // ──────────────────────────────────────────────────────────────────────────
-  // UAI Capacitación (Personas Viña · Gloria Arellano) — 6 viernes 09:00–13:00
-  // Área Comercial: presencial Sede Vitacura · Área Marketing: online Teams
+  // UAI Capacitación (Personas Viña · Gloria Arellano) — 7 bloques
+  // Marketing (Teams · 9 pax): 07-08, 14-08 09:00–13:00 · 21-08 partido 09-11 + 14-16
+  // Comercial (Presencial Vitacura · 23 pax): 28-08, 04-09, 11-09 09:00–13:00
   // ──────────────────────────────────────────────────────────────────────────
-  ...(["2026-07-31","2026-08-07","2026-08-14"] as const).map((d, i) =>
-    ev(
-      `uai-cap-comercial-${i + 1}`,
-      "uai_capacitacion",
-      "UAI Capacitación · Área Comercial",
-      d, "09:00", "13:00",
-      "Presencial · Sede Vitacura",
-      `Clase ${i + 1} de 3 · Coord. Gloria Arellano (Personas Viña)`,
-    ),
-  ),
-  ...(["2026-08-21","2026-08-28","2026-09-04"] as const).map((d, i) =>
-    ev(
-      `uai-cap-marketing-${i + 1}`,
-      "uai_capacitacion",
-      "UAI Capacitación · Área Marketing",
-      d, "09:00", "13:00",
-      "Online · Teams",
-      `Clase ${i + 1} de 3 · Coord. Gloria Arellano (Personas Viña)`,
-    ),
-  ),
+  ev("uai-cap-marketing-1",  "uai_capacitacion", "UAI Capacitación · Área Marketing", "2026-08-07", "09:00", "13:00", "Online · Teams",             "Clase 1 de 3 · 9 personas · Coord. Gloria Arellano (Personas Viña)"),
+  ev("uai-cap-marketing-2",  "uai_capacitacion", "UAI Capacitación · Área Marketing", "2026-08-14", "09:00", "13:00", "Online · Teams",             "Clase 2 de 3 · 9 personas · Coord. Gloria Arellano (Personas Viña)"),
+  ev("uai-cap-marketing-3a", "uai_capacitacion", "UAI Capacitación · Área Marketing", "2026-08-21", "09:00", "11:00", "Online · Teams",             "Clase 3 de 3 · Bloque AM · horario especial · Coord. Gloria Arellano (Personas Viña)"),
+  ev("uai-cap-marketing-3b", "uai_capacitacion", "UAI Capacitación · Área Marketing", "2026-08-21", "14:00", "16:00", "Online · Teams",             "Clase 3 de 3 · Bloque PM · horario especial · Coord. Gloria Arellano (Personas Viña)"),
+  ev("uai-cap-comercial-1",  "uai_capacitacion", "UAI Capacitación · Área Comercial", "2026-08-28", "09:00", "13:00", "Presencial · Sede Vitacura", "Clase 1 de 3 · 23 personas · Coord. Gloria Arellano (Personas Viña)"),
+  ev("uai-cap-comercial-2",  "uai_capacitacion", "UAI Capacitación · Área Comercial", "2026-09-04", "09:00", "13:00", "Presencial · Sede Vitacura", "Clase 2 de 3 · 23 personas · Coord. Gloria Arellano (Personas Viña)"),
+  ev("uai-cap-comercial-3",  "uai_capacitacion", "UAI Capacitación · Área Comercial", "2026-09-11", "09:00", "13:00", "Presencial · Sede Vitacura", "Clase 3 de 3 · 23 personas · Coord. Gloria Arellano (Personas Viña)"),
   ev(
     "ia-negocios",
     "uai_postgrado",
