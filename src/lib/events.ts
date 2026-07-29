@@ -73,16 +73,16 @@ const herramientasAgoDates = ["2026-08-18","2026-08-20","2026-08-25","2026-08-27
 const herramientasSepDates = ["2026-09-01","2026-09-03","2026-09-08","2026-09-10"];
 
 // ──────────────────────────────────────────────────────────────────────────
-// UAI Postgrado · Herramientas IA Productividad — edición octubre
-// 4 sesiones · Ma+Ju 18:00–22:00.
-// ──────────────────────────────────────────────────────────────────────────
-const herramientasOctDates = ["2026-10-06","2026-10-08","2026-10-13","2026-10-15"];
-
-// ──────────────────────────────────────────────────────────────────────────
-// UAI Postgrado · Claude Code & Design — 2da edición (fines de octubre + nov)
+// UAI Postgrado · Claude Code & Design — 2da edición (primera mitad octubre)
 // 4 sesiones · Ma+Ju 18:00–22:00. Coord. Antares Luque Vergara.
 // ──────────────────────────────────────────────────────────────────────────
-const claudeNovDates = ["2026-10-27","2026-10-29","2026-11-03","2026-11-05"];
+const claudeOctDates = ["2026-10-06","2026-10-08","2026-10-13","2026-10-15"];
+
+// ──────────────────────────────────────────────────────────────────────────
+// UAI Postgrado · Herramientas IA Productividad — edición noviembre
+// 4 sesiones · Ma+Ju 18:00–22:00 (arranca fines de octubre).
+// ──────────────────────────────────────────────────────────────────────────
+const herramientasNovDates = ["2026-10-27","2026-10-29","2026-11-03","2026-11-05"];
 
 // ──────────────────────────────────────────────────────────────────────────
 // UAI FIC · Sistemas de Información (10 sesiones · Ju 08:30–11:10)
@@ -157,24 +157,24 @@ export const EVENTS: CalEvent[] = [
       `Clase ${i + 1} de 4 · edición sep · UAI Postgrado`,
     ),
   ),
-  ...herramientasOctDates.map((d, i) =>
+  ...claudeOctDates.map((d, i) =>
     ev(
-      `herramientas-oct-${i + 1}`,
-      "uai_postgrado",
-      "Herramientas IA para la Productividad Profesional",
-      d, "18:00", "22:00",
-      "En vivo · Zoom",
-      `Clase ${i + 1} de 4 · edición oct · UAI Postgrado`,
-    ),
-  ),
-  ...claudeNovDates.map((d, i) =>
-    ev(
-      `claude-nov-${i + 1}`,
+      `claude-oct-${i + 1}`,
       "uai_postgrado",
       "Claude Code & Design",
       d, "18:00", "22:00",
       "En vivo · Zoom",
       `Clase ${i + 1} de 4 · 2da edición · Coord. Antares Luque Vergara`,
+    ),
+  ),
+  ...herramientasNovDates.map((d, i) =>
+    ev(
+      `herramientas-nov-${i + 1}`,
+      "uai_postgrado",
+      "Herramientas IA para la Productividad Profesional",
+      d, "18:00", "22:00",
+      "En vivo · Zoom",
+      `Clase ${i + 1} de 4 · edición nov · UAI Postgrado`,
     ),
   ),
   // ──────────────────────────────────────────────────────────────────────────
