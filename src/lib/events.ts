@@ -79,10 +79,11 @@ const herramientasSepDates = ["2026-09-01","2026-09-03","2026-09-08","2026-09-10
 const claudeV3Dates = ["2026-08-31","2026-09-02","2026-09-07","2026-09-09"];
 
 // ──────────────────────────────────────────────────────────────────────────
-// UAI Postgrado · Claude Code & Design — 3ra edición (primera mitad octubre)
+// UAI Postgrado · Claude Code & Design — 3ra edición (segunda mitad octubre)
 // 4 sesiones · Ma+Ju 18:00–22:00. Coord. Antares Luque Vergara.
+// Desplazada 1 semana por viaje 24 sep – 9 oct.
 // ──────────────────────────────────────────────────────────────────────────
-const claudeOctDates = ["2026-10-06","2026-10-08","2026-10-13","2026-10-15"];
+const claudeOctDates = ["2026-10-13","2026-10-15","2026-10-20","2026-10-22"];
 
 // ──────────────────────────────────────────────────────────────────────────
 // UAI Postgrado · Herramientas IA Productividad — edición noviembre
