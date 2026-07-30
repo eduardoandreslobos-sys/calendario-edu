@@ -206,6 +206,17 @@ export const EVENTS: CalEvent[] = [
   ev("uai-cap-comercial-1",  "uai_capacitacion", "UAI Capacitación · Área Comercial", "2026-08-28", "09:00", "13:00", "Presencial · Sede Vitacura", "Clase 1 de 3 · 23 personas · Coord. Gloria Arellano (Personas Viña)"),
   ev("uai-cap-comercial-2",  "uai_capacitacion", "UAI Capacitación · Área Comercial", "2026-09-04", "09:00", "13:00", "Presencial · Sede Vitacura", "Clase 2 de 3 · 23 personas · Coord. Gloria Arellano (Personas Viña)"),
   ev("uai-cap-comercial-3",  "uai_capacitacion", "UAI Capacitación · Área Comercial", "2026-09-11", "09:00", "13:00", "Presencial · Sede Vitacura", "Clase 3 de 3 · 23 personas · Coord. Gloria Arellano (Personas Viña)"),
+  // ──────────────────────────────────────────────────────────────────────────
+  // IACC — Capacitación 7 sesiones Mié+Vie 09:00–12:00 (S4 corto 2 h)
+  // Coord. Alejandro. 14 oct – 4 nov 2026. Online.
+  // ──────────────────────────────────────────────────────────────────────────
+  ev("iacc-1", "iacc", "IACC · Capacitación", "2026-10-14", "09:00", "12:00", "Online", "Clase 1 de 7 · Coord. Alejandro"),
+  ev("iacc-2", "iacc", "IACC · Capacitación", "2026-10-16", "09:00", "12:00", "Online", "Clase 2 de 7 · Coord. Alejandro"),
+  ev("iacc-3", "iacc", "IACC · Capacitación", "2026-10-21", "09:00", "12:00", "Online", "Clase 3 de 7 · Coord. Alejandro"),
+  ev("iacc-4", "iacc", "IACC · Capacitación", "2026-10-23", "09:00", "11:00", "Online", "Clase 4 de 7 · Bloque corto 2h · Coord. Alejandro"),
+  ev("iacc-5", "iacc", "IACC · Capacitación", "2026-10-28", "09:00", "12:00", "Online", "Clase 5 de 7 · Coord. Alejandro"),
+  ev("iacc-6", "iacc", "IACC · Capacitación", "2026-10-30", "09:00", "12:00", "Online", "Clase 6 de 7 · Coord. Alejandro"),
+  ev("iacc-7", "iacc", "IACC · Capacitación", "2026-11-04", "09:00", "12:00", "Online", "Clase 7 de 7 · Coord. Alejandro"),
   ev(
     "ia-negocios",
     "uai_postgrado",
