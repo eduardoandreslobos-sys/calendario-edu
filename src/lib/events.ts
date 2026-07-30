@@ -73,13 +73,13 @@ const herramientasAgoDates = ["2026-08-18","2026-08-20","2026-08-25","2026-08-27
 const herramientasSepDates = ["2026-09-01","2026-09-03","2026-09-08","2026-09-10"];
 
 // ──────────────────────────────────────────────────────────────────────────
-// UAI Postgrado · Claude Code & Design — 3ra edición (Lun+Mié agosto/sep)
+// UAI Postgrado · Claude Code & Design — 2da edición (Lun+Mié agosto/sep)
 // 4 sesiones · 18:00–22:00. Coord. Antares Luque Vergara.
 // ──────────────────────────────────────────────────────────────────────────
 const claudeV3Dates = ["2026-08-31","2026-09-02","2026-09-07","2026-09-09"];
 
 // ──────────────────────────────────────────────────────────────────────────
-// UAI Postgrado · Claude Code & Design — 2da edición (primera mitad octubre)
+// UAI Postgrado · Claude Code & Design — 3ra edición (primera mitad octubre)
 // 4 sesiones · Ma+Ju 18:00–22:00. Coord. Antares Luque Vergara.
 // ──────────────────────────────────────────────────────────────────────────
 const claudeOctDates = ["2026-10-06","2026-10-08","2026-10-13","2026-10-15"];
@@ -170,7 +170,7 @@ export const EVENTS: CalEvent[] = [
       "Claude Code & Design",
       d, "18:00", "22:00",
       "En vivo · Zoom",
-      `Clase ${i + 1} de 4 · 3ra edición · Coord. Antares Luque Vergara`,
+      `Clase ${i + 1} de 4 · 2da edición · Coord. Antares Luque Vergara`,
     ),
   ),
   ...claudeOctDates.map((d, i) =>
@@ -180,7 +180,7 @@ export const EVENTS: CalEvent[] = [
       "Claude Code & Design",
       d, "18:00", "22:00",
       "En vivo · Zoom",
-      `Clase ${i + 1} de 4 · 2da edición · Coord. Antares Luque Vergara`,
+      `Clase ${i + 1} de 4 · 3ra edición · Coord. Antares Luque Vergara`,
     ),
   ),
   ...herramientasNovDates.map((d, i) =>
