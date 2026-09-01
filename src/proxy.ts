@@ -1,7 +1,9 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { verifySession, SESSION_COOKIE } from "@/lib/auth";
 
-const PUBLIC_PATHS = ["/login", "/api/auth", "/_next", "/favicon.ico"];
+// /api/calendar.ics hace su propia autenticación por token en la URL (no hay
+// cookie de sesión posible: Google/Outlook no inician sesión para leerlo).
+const PUBLIC_PATHS = ["/login", "/api/auth", "/api/calendar.ics", "/_next", "/favicon.ico"];
 
 export async function proxy(request: NextRequest) {
   if (!process.env.AUTH_SECRET) {
