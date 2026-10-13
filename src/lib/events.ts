@@ -92,6 +92,13 @@ const claudeOctDates = ["2026-10-13","2026-10-15","2026-10-20","2026-10-22"];
 const herramientasNovDates = ["2026-10-27","2026-10-29","2026-11-03","2026-11-05"];
 
 // ──────────────────────────────────────────────────────────────────────────
+// Herramientas IA (ed. enero 2027) + Claude (ed. enero 2027)
+// 4 sesiones cada una · Ma+Ju 18:00–22:00. Fechas según calendario recibido el 2026-10-13.
+// ──────────────────────────────────────────────────────────────────────────
+const herramientasEneDates = ["2027-01-05","2027-01-07","2027-01-12","2027-01-14"];
+const claudeEneDates = ["2027-01-19","2027-01-21","2027-01-26","2027-01-28"];
+
+// ──────────────────────────────────────────────────────────────────────────
 // UAI FIC · Sistemas de Información (10 sesiones · Ju 08:30–11:10)
 // ──────────────────────────────────────────────────────────────────────────
 const sistInfoDates = [
@@ -192,6 +199,26 @@ export const EVENTS: CalEvent[] = [
       d, "18:00", "22:00",
       "En vivo · Zoom",
       `Clase ${i + 1} de 4 · edición nov · UAI Postgrado`,
+    ),
+  ),
+  ...herramientasEneDates.map((d, i) =>
+    ev(
+      `herramientas-ene-${i + 1}`,
+      "uai_postgrado",
+      "Herramientas IA para la Productividad Profesional",
+      d, "18:00", "22:00",
+      "En vivo · Zoom",
+      `Clase ${i + 1} de 4 · edición ene 2027 · UAI Postgrado`,
+    ),
+  ),
+  ...claudeEneDates.map((d, i) =>
+    ev(
+      `claude-ene-${i + 1}`,
+      "uai_postgrado",
+      "Claude Code & Design",
+      d, "18:00", "22:00",
+      "En vivo · Zoom",
+      `Clase ${i + 1} de 4 · edición ene 2027 · Coord. Antares Luque Vergara`,
     ),
   ),
   // ──────────────────────────────────────────────────────────────────────────
