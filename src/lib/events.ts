@@ -91,6 +91,9 @@ const claudeOctDates = ["2026-10-13","2026-10-15","2026-10-20","2026-10-22"];
 // ──────────────────────────────────────────────────────────────────────────
 const herramientasNovDates = ["2026-10-27","2026-10-29","2026-11-03","2026-11-05"];
 
+// Herramientas IA — segunda edición de noviembre (publicada por UAI: 17 al 26 nov). Ma+Ju 18:00–22:00.
+const herramientasNov17Dates = ["2026-11-17","2026-11-19","2026-11-24","2026-11-26"];
+
 // ──────────────────────────────────────────────────────────────────────────
 // Herramientas IA (ed. enero 2027) + Claude (ed. enero 2027)
 // 4 sesiones cada una · Ma+Ju 18:00–22:00. Fechas según calendario recibido el 2026-10-13.
@@ -199,6 +202,16 @@ export const EVENTS: CalEvent[] = [
       d, "18:00", "22:00",
       "En vivo · Zoom",
       `Clase ${i + 1} de 4 · edición nov · UAI Postgrado`,
+    ),
+  ),
+  ...herramientasNov17Dates.map((d, i) =>
+    ev(
+      `herramientas-nov17-${i + 1}`,
+      "uai_postgrado",
+      "Herramientas IA para la Productividad Profesional",
+      d, "18:00", "22:00",
+      "En vivo · Zoom",
+      `Clase ${i + 1} de 4 · edición 17 nov · UAI Postgrado`,
     ),
   ),
   ...herramientasEneDates.map((d, i) =>
