@@ -220,7 +220,7 @@ export const EVENTS: CalEvent[] = [
       "fen_starken",
       "Starken · Creación de Agentes de IA (no-code)",
       x.date, "09:15", x.end,
-      "Presencial · Starken · San Bernardo",
+      "Presencial · Starken · Puerta Sur 3300, San Bernardo",
       `Sesión ${i + 1} de 5 · 16 h en total · 20 participantes · FEN U. de Chile (Programas Corporativos) · Contacto: Valentina Sepúlveda`,
     ),
   ),
