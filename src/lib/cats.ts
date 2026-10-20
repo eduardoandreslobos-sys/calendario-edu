@@ -6,6 +6,7 @@ export type CatId =
   | "fen_santander"
   | "fen_hc"
   | "fen_basica"
+  | "fen_starken"
   | "muni_florida"
   | "geforce"
   | "nodo"
@@ -26,6 +27,7 @@ export const CATS: Record<CatId, Cat> = {
   fen_santander: { name: "Santander (FEN)",       dot: "#dc2626", bg: "#fee2e2", text: "#991b1b" },
   fen_hc:        { name: "Diplomado HC (FEN)",    dot: "#e11d48", bg: "#ffe4e6", text: "#9f1239" },
   fen_basica:    { name: "Diplomado Básica (FEN)",dot: "#0d9488", bg: "#ccfbf1", text: "#115e59" },
+  fen_starken:   { name: "Starken (FEN)",        dot: "#4d7c0f", bg: "#ecfccb", text: "#3f6212" },
   muni_florida:  { name: "Muni La Florida",       dot: "#0891b2", bg: "#cffafe", text: "#155e75" },
   geforce:       { name: "GeForce NOW",           dot: "#059669", bg: "#d1fae5", text: "#065f46" },
   nodo:          { name: "nodo.",                 dot: "#d97706", bg: "#fef3c7", text: "#92400e" },
@@ -38,6 +40,7 @@ export const CAT_ORDER: CatId[] = [
   "uai_capacitacion",
   "iacc",
   "fen_santander",
+  "fen_starken",
   "muni_florida",
   "geforce",
   "nodo",

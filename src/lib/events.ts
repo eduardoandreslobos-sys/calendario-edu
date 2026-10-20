@@ -94,6 +94,16 @@ const herramientasNovDates = ["2026-10-27","2026-10-29","2026-11-03","2026-11-05
 // Herramientas IA — segunda edición de noviembre (publicada por UAI: 17 al 26 nov). Ma+Ju 18:00–22:00.
 const herramientasNov17Dates = ["2026-11-17","2026-11-19","2026-11-24","2026-11-26"];
 
+// Starken · Creación de Agentes de IA (no-code) · FEN U. de Chile · Presencial, San Bernardo.
+// 16 h en 5 sesiones, confirmadas el 2026-10-20 (sin viernes por teletrabajo). 20 participantes.
+const starkenSessions = [
+  { date: "2026-11-02", end: "12:15" },
+  { date: "2026-11-09", end: "12:15" },
+  { date: "2026-11-11", end: "12:15" },
+  { date: "2026-11-12", end: "12:15" },
+  { date: "2026-11-16", end: "13:15" },
+];
+
 // ──────────────────────────────────────────────────────────────────────────
 // Herramientas IA (ed. enero 2027) + Claude (ed. enero 2027)
 // 4 sesiones cada una · Ma+Ju 18:00–22:00. Fechas según calendario recibido el 2026-10-13.
@@ -202,6 +212,16 @@ export const EVENTS: CalEvent[] = [
       d, "18:00", "22:00",
       "En vivo · Zoom",
       `Clase ${i + 1} de 4 · edición nov · UAI Postgrado`,
+    ),
+  ),
+  ...starkenSessions.map((x, i) =>
+    ev(
+      `starken-${i + 1}`,
+      "fen_starken",
+      "Starken · Creación de Agentes de IA (no-code)",
+      x.date, "09:15", x.end,
+      "Presencial · Starken · San Bernardo",
+      `Sesión ${i + 1} de 5 · 16 h en total · 20 participantes · FEN U. de Chile (Programas Corporativos) · Contacto: Valentina Sepúlveda`,
     ),
   ),
   ...herramientasNov17Dates.map((d, i) =>
