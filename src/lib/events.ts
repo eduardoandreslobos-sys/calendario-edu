@@ -95,13 +95,14 @@ const herramientasNovDates = ["2026-10-27","2026-10-29","2026-11-03","2026-11-05
 const herramientasNov17Dates = ["2026-11-17","2026-11-19","2026-11-24","2026-11-26"];
 
 // Starken · Creación de Agentes de IA (no-code) · FEN U. de Chile · Presencial, San Bernardo.
-// 16 h en 5 sesiones, confirmadas el 2026-10-20 (sin viernes por teletrabajo). 20 participantes.
+// 16 h en 5 sesiones, fechas finales confirmadas (sin viernes por teletrabajo; la sesión 5 pasó del 16 al 18 nov
+// porque la sala está ocupada el 16). 20 participantes.
 const starkenSessions = [
   { date: "2026-11-02", end: "12:15" },
   { date: "2026-11-09", end: "12:15" },
   { date: "2026-11-11", end: "12:15" },
   { date: "2026-11-12", end: "12:15" },
-  { date: "2026-11-16", end: "13:15" },
+  { date: "2026-11-18", end: "13:15" },
 ];
 
 // ──────────────────────────────────────────────────────────────────────────
