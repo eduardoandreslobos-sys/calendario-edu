@@ -27,7 +27,7 @@ export function CalendarView({ events, onRangeChange, onEventClick }: Props) {
     start: e.start,
     end: e.end,
     extendedProps: { catId: e.catId, canceled: !!e.canceled },
-    classNames: [`cat-${e.catId}`, e.canceled ? "fc-event-canceled" : "", e.conflict ? "fc-event-conflict" : ""].filter(Boolean),
+    classNames: [`cat-${e.catId}`, e.canceled ? "fc-event-canceled" : "", e.conflict ? "fc-event-conflict" : "", e.duplicate && !e.conflict ? "fc-event-dup" : ""].filter(Boolean),
   }));
 
   return (

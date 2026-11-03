@@ -141,6 +141,11 @@ function ModalContent({
               CHOCA CON OTRO EVENTO
             </span>
           )}
+          {event.duplicate && !event.conflict && (
+            <span className="inline-block text-[10.5px] font-bold px-[11px] py-[5px] rounded-full tracking-[0.02em] bg-sky-100 text-sky-800">
+              POSIBLE DUPLICADO · MISMO HORARIO QUE OTRO EVENTO
+            </span>
+          )}
           {event.canceled && (
             <span className="inline-block text-[10.5px] font-bold px-[11px] py-[5px] rounded-full tracking-[0.02em] bg-zinc-200 text-zinc-700">
               CANCELADO

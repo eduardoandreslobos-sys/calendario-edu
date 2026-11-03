@@ -15,6 +15,8 @@ export interface CalEvent {
   allDay?: boolean;
   /** Se pisa en horario con un evento de otro origen. */
   conflict?: boolean;
+  /** Evento externo con exactamente el mismo horario que uno propio: probablemente es el mismo. */
+  duplicate?: boolean;
 }
 
 function ev(

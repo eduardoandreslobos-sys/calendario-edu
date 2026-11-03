@@ -93,18 +93,30 @@ export function parseIcsEvents(text: string, from: Date, to: Date, idPrefix = "e
   return out.sort((a, b) => a.start.localeCompare(b.start));
 }
 
-/** Marca como `conflict` los eventos (de cualquier origen) que se pisan con otro de distinto origen. */
+/**
+ * Compara los eventos externos con los propios:
+ *  - mismo inicio y mismo fin  → `duplicate` (probablemente es el mismo evento cargado en los dos lados);
+ *  - se pisan en parte         → `conflict`, en ambos (el aviso real de choque).
+ * Un externo con horario idéntico a uno propio no cuenta como choque, salvo que además pise a otro.
+ */
 export function markConflicts(events: CalEvent[]): CalEvent[] {
   const own = events.filter((e) => !e.external && !e.canceled);
   const ext = events.filter((e) => e.external && !e.allDay);
-  const hit = new Set<string>();
+  const conflict = new Set<string>();
+  const duplicate = new Set<string>();
   for (const x of ext) {
     for (const o of own) {
-      if (o.start < x.end && x.start < o.end) {
-        hit.add(x.id);
-        hit.add(o.id);
+      if (o.start === x.start && o.end === x.end) {
+        duplicate.add(x.id);
+      } else if (o.start < x.end && x.start < o.end) {
+        conflict.add(x.id);
+        conflict.add(o.id);
       }
     }
   }
-  return events.map((e) => (hit.has(e.id) ? { ...e, conflict: true } : e));
+  return events.map((e) => {
+    const c = conflict.has(e.id);
+    const d = duplicate.has(e.id);
+    return c || d ? { ...e, ...(c ? { conflict: true } : {}), ...(d ? { duplicate: true } : {}) } : e;
+  });
 }
