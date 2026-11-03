@@ -42,7 +42,7 @@ export function Header({ totals, userEmail, role }: Props) {
 
         <Reveal delay={0.48} y={14} duration={0.8}>
           <p className="font-serif italic text-[clamp(16px,1.9vw,21px)] text-[color:var(--color-text-soft)] mt-3.5 tracking-[-0.005em]">
-            Compromisos docentes · Mayo a octubre de 2026
+            Compromisos docentes · Agenda consolidada
           </p>
         </Reveal>
       </div>

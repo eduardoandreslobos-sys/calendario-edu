@@ -16,9 +16,11 @@ interface Props {
   events: CalEvent[];
   onRangeChange: (range: { start: Date; end: Date }, viewType: string) => void;
   onEventClick: (eventId: string) => void;
+  onDayClick?: (isoDate: string) => void;
+  selectedDay?: string | null;
 }
 
-export function CalendarView({ events, onRangeChange, onEventClick }: Props) {
+export function CalendarView({ events, onRangeChange, onEventClick, onDayClick, selectedDay }: Props) {
   const fcRef = useRef<FullCalendar>(null);
 
   const fcEvents = events.map((e) => ({
@@ -55,6 +57,8 @@ export function CalendarView({ events, onRangeChange, onEventClick }: Props) {
         dayHeaderContent={(arg) => arg.text.replace(/\./g, "")}
         slotLabelFormat={{ hour: "2-digit", minute: "2-digit", hour12: false }}
         events={fcEvents}
+        dateClick={(info) => onDayClick?.(info.dateStr.slice(0, 10))}
+        dayCellClassNames={(arg) => (selectedDay && arg.date.toISOString().slice(0, 10) === selectedDay ? ["fc-day-selected"] : [])}
         eventClick={(info: EventClickArg) => {
           info.jsEvent.preventDefault();
           onEventClick(info.event.id);

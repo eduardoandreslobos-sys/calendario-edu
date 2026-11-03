@@ -4,10 +4,8 @@ import "./globals.css";
 import { MeshBg } from "@/components/effects/MeshBg";
 import { GrainOverlay } from "@/components/effects/GrainOverlay";
 import { SmoothScroll } from "@/components/effects/SmoothScroll";
-import { STATIC_TOTALS } from "@/lib/events";
-import { fmtHours } from "@/lib/format";
 
-const description = `${STATIC_TOTALS.sessions} sesiones · ${fmtHours(STATIC_TOTALS.hours)} horas · Mayo a octubre de 2026`;
+const description = "Agenda consolidada de compromisos docentes";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -33,6 +31,9 @@ const jetbrains = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Calendario Edu — Compromisos docentes",
   description,
+  applicationName: "Calendario Edu",
+  appleWebApp: { capable: true, title: "Calendario", statusBarStyle: "default" },
+  icons: { icon: "/icons/icon-192.png", apple: "/icons/apple-touch-icon.png" },
   openGraph: {
     title: "Calendario Edu — Compromisos docentes",
     description,
@@ -42,6 +43,9 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: "#f5f4ef",
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({

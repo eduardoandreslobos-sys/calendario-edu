@@ -299,3 +299,7 @@ body {
   }
   .mesh { animation: none !important; }
 }
+
+/* Día seleccionado al tocarlo en la vista de mes (se ve su agenda abajo). */
+.fc .fc-day-selected { background: rgba(12, 12, 13, 0.06) !important; box-shadow: inset 0 0 0 2px rgba(12, 12, 13, 0.55); }
+.fc .fc-daygrid-day { cursor: pointer; }

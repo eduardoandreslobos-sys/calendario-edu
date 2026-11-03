@@ -8,6 +8,7 @@ import { Stats } from "./Stats";
 import { Legend } from "./Legend";
 import { CalendarView } from "./CalendarView";
 import { Agenda } from "./Agenda";
+import { Upcoming } from "./Upcoming";
 import { EventModal } from "./EventModal";
 import { EventForm } from "./EventForm";
 import { ShareModal } from "./ShareModal";
@@ -36,6 +37,8 @@ export function CalendarApp({ initialEvents, role, collaborators }: Props) {
   const [viewType, setViewType] = useState<string>("dayGridMonth");
   const [mode, setMode] = useState<Mode>({ type: "closed" });
   const [shareOpen, setShareOpen] = useState(false);
+  const [legendOpen, setLegendOpen] = useState(false);
+  const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [hiddenCats, setHiddenCats] = useState<Set<CatId>>(() => new Set());
   const [, startTransition] = useTransition();
 
@@ -83,6 +86,7 @@ export function CalendarApp({ initialEvents, role, collaborators }: Props) {
   const handleRange = useCallback((r: { start: Date; end: Date }, v: string) => {
     setRange(r);
     setViewType(v);
+    setSelectedDay(null);
   }, []);
 
   const activeEvent = useMemo(
@@ -122,22 +126,38 @@ export function CalendarApp({ initialEvents, role, collaborators }: Props) {
         </Reveal>
       )}
 
-      <Reveal delay={0.62} y={20}>
-        <Stats events={visibleEvents.filter((e) => !e.external)} start={range?.start ?? null} end={range?.end ?? null} />
-      </Reveal>
-      <Reveal delay={0.78} y={20}>
-        <Legend
-          hiddenCats={hiddenCats}
-          onToggle={toggleCat}
-          onShowAll={showAllCats}
-          omit={initialEvents.some((e) => e.external) ? [] : ["ext_fen"]}
-        />
-      </Reveal>
+      <Upcoming events={visibleEvents} onEventClick={(id) => setMode({ type: "view", id })} />
+
+      <div className="max-md:hidden">
+        <Reveal delay={0.62} y={20}>
+          <Stats events={visibleEvents.filter((e) => !e.external)} start={range?.start ?? null} end={range?.end ?? null} />
+        </Reveal>
+      </div>
+      <button
+        type="button"
+        onClick={() => setLegendOpen((v) => !v)}
+        aria-expanded={legendOpen}
+        className="md:hidden mb-3 inline-flex items-center gap-2 rounded-full bg-white/80 border border-[color:var(--border-glass-strong)] px-3.5 py-2 text-[12px] font-semibold"
+      >
+        {legendOpen ? "Ocultar categorías" : hiddenCats.size > 0 ? `Categorías (${hiddenCats.size} ocultas)` : "Filtrar categorías"}
+      </button>
+      <div className={legendOpen ? "" : "max-md:hidden"}>
+        <Reveal delay={0.78} y={20}>
+          <Legend
+            hiddenCats={hiddenCats}
+            onToggle={toggleCat}
+            onShowAll={showAllCats}
+            omit={initialEvents.some((e) => e.external) ? [] : ["ext_fen"]}
+          />
+        </Reveal>
+      </div>
       <Reveal delay={0.92} y={24}>
         <CalendarView
           events={visibleEvents}
           onRangeChange={handleRange}
           onEventClick={(id) => setMode({ type: "view", id })}
+          onDayClick={setSelectedDay}
+          selectedDay={selectedDay}
         />
       </Reveal>
       <Reveal delay={1.08} y={28}>
@@ -146,6 +166,8 @@ export function CalendarApp({ initialEvents, role, collaborators }: Props) {
           start={range?.start ?? null}
           end={range?.end ?? null}
           viewType={viewType}
+          selectedDay={selectedDay}
+          onClearDay={() => setSelectedDay(null)}
           onEventClick={(id) => setMode({ type: "view", id })}
         />
       </Reveal>

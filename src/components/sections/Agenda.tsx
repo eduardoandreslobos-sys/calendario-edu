@@ -3,23 +3,34 @@
 import { useMemo } from "react";
 import { catOf } from "@/lib/cats";
 import { eventsInRange, type CalEvent } from "@/lib/events";
-import { fmtHM, MONTHS_SHORT } from "@/lib/format";
+import { DAYS_FULL, fmtHM, MONTHS_FULL, MONTHS_SHORT } from "@/lib/format";
 
 interface Props {
   events: CalEvent[];
   start: Date | null;
   end: Date | null;
   viewType: string;
+  selectedDay?: string | null;
+  onClearDay?: () => void;
   onEventClick: (id: string) => void;
 }
 
-export function Agenda({ events, start, end, viewType, onEventClick }: Props) {
+export function Agenda({ events, start, end, viewType, selectedDay, onClearDay, onEventClick }: Props) {
   const items = useMemo(() => {
+    if (selectedDay) {
+      const s = new Date(`${selectedDay}T00:00:00`);
+      return eventsInRange(events, s, new Date(s.getTime() + 86_400_000));
+    }
     if (!start || !end) return [];
     return eventsInRange(events, start, end);
-  }, [events, start, end]);
+  }, [events, start, end, selectedDay]);
 
-  const title = viewType === "timeGridWeek" ? "Agenda de la semana" : "Agenda del mes";
+  const dayDate = selectedDay ? new Date(`${selectedDay}T00:00:00`) : null;
+  const title = dayDate
+    ? `Agenda del ${DAYS_FULL[dayDate.getDay()]} ${dayDate.getDate()} de ${MONTHS_FULL[dayDate.getMonth()]}`
+    : viewType === "timeGridWeek"
+      ? "Agenda de la semana"
+      : "Agenda del mes";
   const meta = `${items.length} ${items.length === 1 ? "compromiso" : "compromisos"}`;
 
   return (
@@ -28,6 +39,15 @@ export function Agenda({ events, start, end, viewType, onEventClick }: Props) {
         <h2 className="text-base font-bold tracking-[-0.015em] m-0">{title}</h2>
         <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-[color:var(--color-text-soft)] font-medium">
           {meta}
+          {selectedDay && onClearDay && (
+            <button
+              type="button"
+              onClick={onClearDay}
+              className="ml-3 rounded-full bg-white/80 border border-[color:var(--border-glass-strong)] px-2.5 py-1 text-[10.5px] font-semibold normal-case tracking-normal text-[color:var(--color-ink)]"
+            >
+              Ver todo
+            </button>
+          )}
         </span>
       </div>
 

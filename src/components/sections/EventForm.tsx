@@ -102,7 +102,7 @@ export function EventForm({ event, onClose, onSaved }: Props) {
 
             <Field label="Categoría">
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
-                {CAT_ORDER.map((id) => {
+                {CAT_ORDER.filter((id) => id !== "ext_fen").map((id) => {
                   const c = CATS[id];
                   const selected = id === catId;
                   return (
