@@ -99,6 +99,9 @@ const herramientasNovDates = ["2026-10-27","2026-10-29","2026-11-03","2026-11-05
 // Herramientas IA — segunda edición de noviembre (publicada por UAI: 17 al 26 nov). Ma+Ju 18:00–22:00.
 const herramientasNov17Dates = ["2026-11-17","2026-11-19","2026-11-24","2026-11-26"];
 
+// Herramientas IA — edición 16 nov (UAI, asignada el 2026-11-03). Lu+Mi 18:00–22:00.
+const herramientasNov16Dates = ["2026-11-16","2026-11-18","2026-11-23","2026-11-25"];
+
 // Starken · Herramientas IA para la Productividad Profesional · FEN U. de Chile · Presencial, San Bernardo.
 // 16 h en 5 sesiones, fechas finales confirmadas (sin viernes por teletrabajo; la sesión 5 pasó del 16 al 18 nov
 // porque la sala está ocupada el 16). 20 participantes.
@@ -249,6 +252,16 @@ export const EVENTS: CalEvent[] = [
       x.date, x.start, x.end,
       "Presencial · Starken · Puerta Sur 3300, San Bernardo",
       `Sesión ${i + 1} de 4 (4 h) · 16 h en total · FEN U. de Chile (Programas Corporativos) · Contacto: Valentina Sepúlveda`,
+    ),
+  ),
+  ...herramientasNov16Dates.map((d, i) =>
+    ev(
+      `herramientas-nov16-${i + 1}`,
+      "uai_postgrado",
+      "Herramientas IA para la Productividad Profesional",
+      d, "18:00", "22:00",
+      "En vivo · Zoom",
+      `Clase ${i + 1} de 4 · edición 16 nov · UAI Postgrado`,
     ),
   ),
   ...herramientasNov17Dates.map((d, i) =>
