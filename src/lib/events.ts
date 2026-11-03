@@ -105,7 +105,7 @@ const starkenSessions = [
   { date: "2026-11-18", end: "13:15" },
 ];
 
-// Starken · Grupo 2 (mismo curso, otro grupo). TENTATIVO, pendiente confirmación de Starken.
+// Starken · Grupo 2 (mismo curso, otro grupo). Fechas confirmadas por Starken el 2026-11-02 (19, 25, 26 y 30 nov).
 // Starken rechazó la propuesta de tardes pegada al grupo 1; se propuso en la mañana: 4 sesiones de 4 h
 // (16 h), solo en noviembre, dentro de las mañanas con sala libre que informó Starken el 2026-10-29
 // (sin viernes ni el 10 y 23 nov, donde la sala AM no está disponible).
@@ -243,7 +243,7 @@ export const EVENTS: CalEvent[] = [
       "Starken · Grupo 2 · Herramientas IA para la Productividad Profesional",
       x.date, x.start, x.end,
       "Presencial · Starken · Puerta Sur 3300, San Bernardo",
-      `Sesión ${i + 1} de 4 (4 h) · 16 h en total · TENTATIVO, pendiente confirmación de Starken · FEN U. de Chile (Programas Corporativos) · Contacto: Valentina Sepúlveda`,
+      `Sesión ${i + 1} de 4 (4 h) · 16 h en total · FEN U. de Chile (Programas Corporativos) · Contacto: Valentina Sepúlveda`,
     ),
   ),
   ...herramientasNov17Dates.map((d, i) =>
