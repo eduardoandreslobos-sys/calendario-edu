@@ -10,7 +10,8 @@ export type CatId =
   | "muni_florida"
   | "geforce"
   | "nodo"
-  | "personal";
+  | "personal"
+  | "ext_fen";
 
 export interface Cat {
   name: string;
@@ -32,6 +33,7 @@ export const CATS: Record<CatId, Cat> = {
   geforce:       { name: "GeForce NOW",           dot: "#059669", bg: "#d1fae5", text: "#065f46" },
   nodo:          { name: "nodo.",                 dot: "#d97706", bg: "#fef3c7", text: "#92400e" },
   personal:      { name: "Personal",              dot: "#6b7280", bg: "#f3f4f6", text: "#374151" },
+  ext_fen:       { name: "Mi calendario FEN (Google)", dot: "#0040a0", bg: "#e6ecf7", text: "#0a2a6b" },
 };
 
 export const CAT_ORDER: CatId[] = [
@@ -45,4 +47,5 @@ export const CAT_ORDER: CatId[] = [
   "geforce",
   "nodo",
   "personal",
+  "ext_fen",
 ];

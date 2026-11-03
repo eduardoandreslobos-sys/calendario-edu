@@ -6,14 +6,16 @@ interface Props {
   hiddenCats: Set<CatId>;
   onToggle: (id: CatId) => void;
   onShowAll: () => void;
+  /** Categorías que no se muestran en la leyenda (por ejemplo, el calendario externo si no hay uno conectado). */
+  omit?: CatId[];
 }
 
-export function Legend({ hiddenCats, onToggle, onShowAll }: Props) {
+export function Legend({ hiddenCats, onToggle, onShowAll, omit = [] }: Props) {
   const anyHidden = hiddenCats.size > 0;
 
   return (
     <section className="glass flex flex-wrap items-center gap-2 px-[18px] py-3.5 mb-[18px]">
-      {CAT_ORDER.map((id) => {
+      {CAT_ORDER.filter((id) => !omit.includes(id)).map((id) => {
         const c = CATS[id];
         const hidden = hiddenCats.has(id);
         return (

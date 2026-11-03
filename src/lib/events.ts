@@ -10,6 +10,11 @@ export interface CalEvent {
   notes: string;
   canceled?: boolean;
   externalId?: string | null;
+  /** Viene de un calendario externo (solo lectura, no se edita ni cuenta en las estadísticas). */
+  external?: boolean;
+  allDay?: boolean;
+  /** Se pisa en horario con un evento de otro origen. */
+  conflict?: boolean;
 }
 
 function ev(

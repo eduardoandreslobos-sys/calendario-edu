@@ -123,10 +123,15 @@ export function CalendarApp({ initialEvents, role, collaborators }: Props) {
       )}
 
       <Reveal delay={0.62} y={20}>
-        <Stats events={visibleEvents} start={range?.start ?? null} end={range?.end ?? null} />
+        <Stats events={visibleEvents.filter((e) => !e.external)} start={range?.start ?? null} end={range?.end ?? null} />
       </Reveal>
       <Reveal delay={0.78} y={20}>
-        <Legend hiddenCats={hiddenCats} onToggle={toggleCat} onShowAll={showAllCats} />
+        <Legend
+          hiddenCats={hiddenCats}
+          onToggle={toggleCat}
+          onShowAll={showAllCats}
+          omit={initialEvents.some((e) => e.external) ? [] : ["ext_fen"]}
+        />
       </Reveal>
       <Reveal delay={0.92} y={24}>
         <CalendarView
@@ -147,7 +152,7 @@ export function CalendarApp({ initialEvents, role, collaborators }: Props) {
 
       <EventModal
         event={activeEvent}
-        canEdit={canWrite}
+        canEdit={canWrite && !activeEvent?.external}
         onClose={() => setMode({ type: "closed" })}
         onEdit={(e) => setMode({ type: "edit", event: e })}
         onMutated={refresh}

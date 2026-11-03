@@ -275,6 +275,9 @@ body {
 .cat-muni_florida.fc-timegrid-event  { background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%) !important; border-left: 3px solid #155e75 !important; }
 .cat-geforce.fc-timegrid-event       { background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important; border-left: 3px solid #065f46 !important; }
 .cat-nodo.fc-timegrid-event          { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important; border-left: 3px solid #92400e !important; }
+.cat-ext_fen.fc-timegrid-event       { background: linear-gradient(135deg, #3b6fc4 0%, #0040a0 100%) !important; border-left: 3px solid #0a2a6b !important; opacity: 0.85; }
+.fc-event-conflict .fc-pill { box-shadow: 0 0 0 2px #f59e0b; }
+.fc-event-conflict.fc-timegrid-event { box-shadow: 0 0 0 2px #f59e0b; }
 .cat-personal.fc-timegrid-event      { background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%) !important; border-left: 3px solid #374151 !important; }
 
 /* Canceled events */

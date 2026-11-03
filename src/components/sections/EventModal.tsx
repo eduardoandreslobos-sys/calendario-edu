@@ -131,6 +131,16 @@ function ModalContent({
           >
             {cat.name}
           </span>
+          {event.external && (
+            <span className="inline-block text-[10.5px] font-bold px-[11px] py-[5px] rounded-full tracking-[0.02em] bg-zinc-100 text-zinc-600">
+              SOLO LECTURA
+            </span>
+          )}
+          {event.conflict && (
+            <span className="inline-block text-[10.5px] font-bold px-[11px] py-[5px] rounded-full tracking-[0.02em] bg-amber-100 text-amber-800">
+              CHOCA CON OTRO EVENTO
+            </span>
+          )}
           {event.canceled && (
             <span className="inline-block text-[10.5px] font-bold px-[11px] py-[5px] rounded-full tracking-[0.02em] bg-zinc-200 text-zinc-700">
               CANCELADO

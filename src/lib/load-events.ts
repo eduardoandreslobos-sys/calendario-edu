@@ -5,6 +5,8 @@ import { chileLocalFromISO } from "@/lib/tz";
 import type { CalEvent } from "@/lib/events";
 import type { CatId } from "@/lib/cats";
 import type { Role } from "@/lib/auth";
+import { loadExternalEvents } from "@/lib/external-calendars";
+import { markConflicts } from "@/lib/ics-parse";
 
 export interface CollaboratorSummary {
   email: string;
@@ -36,7 +38,7 @@ export async function loadEvents(): Promise<LoadedEvents> {
     SELECT id, title, start_at, end_at, cat_id, location, notes, canceled
     FROM events ORDER BY start_at ASC`;
 
-  const events: CalEvent[] = rows.map((r) => ({
+  const own: CalEvent[] = rows.map((r) => ({
     id: r.id,
     title: r.title,
     start: chileLocalFromISO(r.start_at.toISOString()),
@@ -46,6 +48,10 @@ export async function loadEvents(): Promise<LoadedEvents> {
     notes: r.notes ?? "",
     canceled: r.canceled ?? false,
   }));
+
+  // El calendario personal de FEN es privado: solo lo ve el dueño, nunca los colaboradores.
+  const external = user?.role === "owner" ? await loadExternalEvents() : [];
+  const events = external.length > 0 ? markConflicts([...own, ...external]) : own;
 
   let collaborators: CollaboratorSummary[] = [];
   if (user?.role === "owner") {
