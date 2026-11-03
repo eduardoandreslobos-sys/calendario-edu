@@ -9,7 +9,7 @@ import esLocale from "@fullcalendar/core/locales/es";
 import type { EventContentArg, DatesSetArg, EventClickArg } from "@fullcalendar/core";
 
 import { type CalEvent } from "@/lib/events";
-import { CATS, type CatId } from "@/lib/cats";
+import { catOf, type CatId } from "@/lib/cats";
 import { fmtHM } from "@/lib/format";
 
 interface Props {
@@ -63,7 +63,7 @@ export function CalendarView({ events, onRangeChange, onEventClick }: Props) {
         eventContent={(arg: EventContentArg) => {
           if (arg.view.type === "dayGridMonth") {
             const catId = arg.event.extendedProps.catId as CatId;
-            const cat = CATS[catId];
+            const cat = catOf(catId);
             const wrap = document.createElement("div");
             wrap.className = "fc-pill";
             wrap.style.background = cat.bg;

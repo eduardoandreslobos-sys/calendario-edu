@@ -3,7 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState, useTransition } from "react";
 import { X } from "lucide-react";
-import { CATS, CAT_ORDER, type CatId } from "@/lib/cats";
+import { CATS, catOf, CAT_ORDER, type CatId } from "@/lib/cats";
 import { fmtHM } from "@/lib/format";
 import type { CalEvent } from "@/lib/events";
 import { upsertEvent } from "@/app/actions/events";
@@ -48,7 +48,7 @@ export function EventForm({ event, onClose, onSaved }: Props) {
     });
   }
 
-  const cat = CATS[catId];
+  const cat = catOf(catId);
 
   return (
     <AnimatePresence>

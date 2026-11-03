@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { CATS } from "@/lib/cats";
+import { catOf } from "@/lib/cats";
 import { eventsInRange, type CalEvent } from "@/lib/events";
 import { fmtHM, MONTHS_SHORT } from "@/lib/format";
 
@@ -38,7 +38,7 @@ export function Agenda({ events, start, end, viewType, onEventClick }: Props) {
       ) : (
         <ul className="list-none m-0 p-0 flex flex-col">
           {items.map((e) => {
-            const cat = CATS[e.catId];
+            const cat = catOf(e.catId);
             return (
               <li
                 key={e.id}

@@ -3,7 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState, useTransition } from "react";
 import { Pencil, Ban, RotateCcw, Trash2, X } from "lucide-react";
-import { CATS } from "@/lib/cats";
+import { catOf } from "@/lib/cats";
 import { fmtFullDate, fmtHM } from "@/lib/format";
 import type { CalEvent } from "@/lib/events";
 import { deleteEvent, setCanceled } from "@/app/actions/events";
@@ -88,7 +88,7 @@ function ModalContent({
   onEdit: (event: CalEvent) => void;
   onMutated: () => void;
 }) {
-  const cat = CATS[event.catId];
+  const cat = catOf(event.catId);
   const start = new Date(event.start);
   const end = new Date(event.end);
   const [pending, startTransition] = useTransition();

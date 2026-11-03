@@ -11,6 +11,7 @@ export type CatId =
   | "geforce"
   | "nodo"
   | "personal"
+  | "banco_central"
   | "ext_fen";
 
 export interface Cat {
@@ -33,6 +34,7 @@ export const CATS: Record<CatId, Cat> = {
   geforce:       { name: "GeForce NOW",           dot: "#059669", bg: "#d1fae5", text: "#065f46" },
   nodo:          { name: "nodo.",                 dot: "#d97706", bg: "#fef3c7", text: "#92400e" },
   personal:      { name: "Personal",              dot: "#6b7280", bg: "#f3f4f6", text: "#374151" },
+  banco_central: { name: "Banco Central",        dot: "#ea580c", bg: "#ffedd5", text: "#9a3412" },
   ext_fen:       { name: "Mi calendario FEN (Google)", dot: "#0040a0", bg: "#e6ecf7", text: "#0a2a6b" },
 };
 
@@ -47,5 +49,17 @@ export const CAT_ORDER: CatId[] = [
   "geforce",
   "nodo",
   "personal",
+  "banco_central",
   "ext_fen",
 ];
+
+const UNKNOWN_CAT: Cat = { name: "Otro", dot: "#6b7280", bg: "#f3f4f6", text: "#374151" };
+
+/**
+ * Categoría de un evento. La base de datos puede traer un cat_id que este código aún
+ * no conoce (por ejemplo, cargado a mano); en ese caso se muestra como "Otro" en vez de
+ * romper la página entera, que es lo que pasaba al abrir septiembre.
+ */
+export function catOf(id: string): Cat {
+  return (CATS as Record<string, Cat | undefined>)[id] ?? UNKNOWN_CAT;
+}

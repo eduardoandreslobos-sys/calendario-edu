@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import { Tilt } from "@/components/effects/Tilt";
-import { CATS, type CatId } from "@/lib/cats";
+import { catOf, type CatId } from "@/lib/cats";
 import { eventsInRange, type CalEvent } from "@/lib/events";
 import { diffHours, fmtHours } from "@/lib/format";
 
@@ -51,7 +51,7 @@ export function Stats({ events, start, end }: Props) {
           {data && data.order.length ? (
             <div className="flex flex-col gap-2">
               {data.order.map((id) => {
-                const c = CATS[id];
+                const c = catOf(id);
                 const h = data.byCat[id] ?? 0;
                 return (
                   <div
