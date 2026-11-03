@@ -36,7 +36,6 @@ export function CalendarView({ events, onRangeChange, onEventClick }: Props) {
         ref={fcRef}
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
-        initialDate="2026-05-13"
         locale={esLocale}
         firstDay={1}
         height="auto"
