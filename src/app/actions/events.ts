@@ -5,15 +5,15 @@ import { z } from "zod";
 import { sql } from "@/lib/db";
 import { requireWriter } from "@/lib/access";
 import { chileISO } from "@/lib/tz";
+import { CATS } from "@/lib/cats";
 
-const CAT_VALUES = [
-  "uai_postgrado","uai_fic","fen_santander","fen_hc","fen_basica","muni_florida","geforce","nodo","personal",
-] as const;
+// Todas las categorías propias; "ext_fen" es solo del calendario de Google y no se guarda en la base.
+const isOwnCat = (v: string) => v in CATS && v !== "ext_fen";
 
 const upsertSchema = z.object({
   id: z.string().optional(),
   title: z.string().min(1).max(200),
-  cat_id: z.enum(CAT_VALUES),
+  cat_id: z.string().refine(isOwnCat, "Categoría inválida"),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   time_start: z.string().regex(/^\d{2}:\d{2}$/),
   time_end: z.string().regex(/^\d{2}:\d{2}$/),

@@ -23,6 +23,7 @@ interface Props {
   initialEvents: CalEvent[];
   role: Role | null;
   collaborators: CollaboratorSummary[];
+  externalWritable: boolean;
 }
 
 type Mode =
@@ -31,7 +32,7 @@ type Mode =
   | { type: "edit"; event: CalEvent }
   | { type: "create" };
 
-export function CalendarApp({ initialEvents, role, collaborators }: Props) {
+export function CalendarApp({ initialEvents, role, collaborators, externalWritable }: Props) {
   const router = useRouter();
   const [range, setRange] = useState<{ start: Date; end: Date } | null>(null);
   const [viewType, setViewType] = useState<string>("dayGridMonth");
@@ -174,7 +175,7 @@ export function CalendarApp({ initialEvents, role, collaborators }: Props) {
 
       <EventModal
         event={activeEvent}
-        canEdit={canWrite && !activeEvent?.external}
+        canEdit={activeEvent?.external ? Boolean(externalWritable && activeEvent.editable) : canWrite}
         onClose={() => setMode({ type: "closed" })}
         onEdit={(e) => setMode({ type: "edit", event: e })}
         onMutated={refresh}
@@ -183,6 +184,7 @@ export function CalendarApp({ initialEvents, role, collaborators }: Props) {
       {(mode.type === "create" || mode.type === "edit") && (
         <EventForm
           event={mode.type === "edit" ? mode.event : null}
+          externalWritable={externalWritable}
           onClose={() => setMode({ type: "closed" })}
           onSaved={() => {
             setMode({ type: "closed" });

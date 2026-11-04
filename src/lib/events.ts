@@ -12,6 +12,8 @@ export interface CalEvent {
   externalId?: string | null;
   /** Viene de un calendario externo (solo lectura, no se edita ni cuenta en las estadísticas). */
   external?: boolean;
+  /** Evento externo que se puede modificar desde la app (hay puente con Google y es propio, único y con hora). */
+  editable?: boolean;
   allDay?: boolean;
   /** Se pisa en horario con un evento de otro origen. */
   conflict?: boolean;

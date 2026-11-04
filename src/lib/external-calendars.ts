@@ -1,6 +1,7 @@
 import "server-only";
 import { parseIcsEvents } from "@/lib/ics-parse";
 import type { CalEvent } from "@/lib/events";
+import { listBridgeEvents } from "@/lib/gcal-bridge";
 
 // Calendario externo de solo lectura (hoy: eloboss@fen.uchile.cl en Google Calendar).
 // EXTERNAL_ICS_FEN = "Dirección secreta en formato iCal" del calendario. Es un secreto:
@@ -11,6 +12,10 @@ const FETCH_TIMEOUT_MS = 8000;
 const MAX_BYTES = 8 * 1024 * 1024;
 
 export async function loadExternalEvents(): Promise<CalEvent[]> {
+  // Con el puente de Google configurado se lee en vivo (y se puede editar); si falla, se usa el feed iCal.
+  const live = await listBridgeEvents();
+  if (live) return live;
+
   const url = process.env.EXTERNAL_ICS_FEN;
   if (!url) return [];
   if (!url.startsWith("https://")) {

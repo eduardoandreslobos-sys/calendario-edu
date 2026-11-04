@@ -70,6 +70,7 @@ export function parseIcsEvents(text: string, from: Date, to: Date, idPrefix = "e
       location: isPrivate ? "" : ev.location ?? "",
       notes: "",
       external: true,
+      externalId: uid,
       allDay,
     });
   };

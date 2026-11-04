@@ -7,18 +7,22 @@ import { CATS, catOf, CAT_ORDER, type CatId } from "@/lib/cats";
 import { fmtHM } from "@/lib/format";
 import type { CalEvent } from "@/lib/events";
 import { upsertEvent } from "@/app/actions/events";
+import { saveExternalEvent } from "@/app/actions/external";
 
 interface Props {
   event: CalEvent | null;
   onClose: () => void;
   onSaved: () => void;
+  externalWritable?: boolean;
 }
 
-export function EventForm({ event, onClose, onSaved }: Props) {
+export function EventForm({ event, onClose, onSaved, externalWritable = false }: Props) {
   const formRef = useRef<HTMLFormElement>(null);
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [catId, setCatId] = useState<CatId>(event?.catId ?? "personal");
+  // Un evento del calendario de Google se edita directo en Google (por el puente); no tiene categoría ni notas propias.
+  const isGoogle = event?.external ? true : catId === "ext_fen";
 
   const initialDate = event ? event.start.slice(0, 10) : new Date().toISOString().slice(0, 10);
   const initialStart = event ? fmtHM(new Date(event.start)) : "09:00";
@@ -41,8 +45,9 @@ export function EventForm({ event, onClose, onSaved }: Props) {
     setError(null);
     const formData = new FormData(e.currentTarget);
     formData.set("cat_id", catId);
+    if (event?.external && event.externalId) formData.set("id", event.externalId);
     startTransition(async () => {
-      const r = await upsertEvent(formData);
+      const r = isGoogle ? await saveExternalEvent(formData) : await upsertEvent(formData);
       if (r.ok) onSaved();
       else setError(r.error);
     });
@@ -86,7 +91,12 @@ export function EventForm({ event, onClose, onSaved }: Props) {
             <h3 className="text-[20px] font-bold tracking-[-0.022em] m-0">
               {event ? "Editar evento" : "Nuevo evento"}
             </h3>
-            {event && <input type="hidden" name="id" value={event.id} />}
+            {event && !event.external && <input type="hidden" name="id" value={event.id} />}
+            {isGoogle && (
+              <p className="text-[12.5px] text-[color:var(--color-text-soft)] -mt-2 m-0">
+                Se guarda en tu calendario de Google (FEN).
+              </p>
+            )}
 
             <Field label="Título">
               <input
@@ -100,9 +110,10 @@ export function EventForm({ event, onClose, onSaved }: Props) {
               />
             </Field>
 
+            {!event?.external && (
             <Field label="Categoría">
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
-                {CAT_ORDER.filter((id) => id !== "ext_fen").map((id) => {
+                {CAT_ORDER.filter((id) => id !== "ext_fen" || (externalWritable && !event)).map((id) => {
                   const c = CATS[id];
                   const selected = id === catId;
                   return (
@@ -126,6 +137,7 @@ export function EventForm({ event, onClose, onSaved }: Props) {
                 })}
               </div>
             </Field>
+            )}
 
             <Field label="Fecha">
               <input
@@ -169,6 +181,7 @@ export function EventForm({ event, onClose, onSaved }: Props) {
               />
             </Field>
 
+            {!isGoogle && (
             <Field label="Notas">
               <textarea
                 name="notes"
@@ -179,6 +192,7 @@ export function EventForm({ event, onClose, onSaved }: Props) {
                 className={`${inputCls} resize-y min-h-[60px]`}
               />
             </Field>
+            )}
 
             {error && (
               <p className="text-[13px] text-red-700 bg-red-50 border border-red-200 rounded-lg px-3 py-2">

@@ -7,6 +7,7 @@ import { catOf } from "@/lib/cats";
 import { fmtFullDate, fmtHM } from "@/lib/format";
 import type { CalEvent } from "@/lib/events";
 import { deleteEvent, setCanceled } from "@/app/actions/events";
+import { deleteExternalEvent } from "@/app/actions/external";
 
 interface Props {
   event: CalEvent | null;
@@ -102,7 +103,7 @@ function ModalContent({
 
   const onDelete = () =>
     startTransition(async () => {
-      const r = await deleteEvent(event.id);
+      const r = event.external && event.externalId ? await deleteExternalEvent(event.externalId) : await deleteEvent(event.id);
       if (r.ok) {
         onMutated();
         onClose();
@@ -173,6 +174,12 @@ function ModalContent({
           {event.notes && <Row emoji="📝" label="Notas" value={event.notes} />}
         </div>
 
+        {event.external && !canEdit && (
+          <p className="mt-6 pt-5 border-t border-[color:var(--border-glass)] text-[12px] text-[color:var(--color-text-soft)]">
+            Solo lectura. Los eventos recurrentes, de día completo o de los que no eres organizador se cambian en Google Calendar.
+          </p>
+        )}
+
         {canEdit && (
           <div className="mt-6 pt-5 border-t border-[color:var(--border-glass)] flex flex-wrap gap-2">
             <button
@@ -183,6 +190,7 @@ function ModalContent({
               <Pencil className="w-3.5 h-3.5" />
               Editar
             </button>
+            {!event.external && (
             <button
               onClick={onCancel}
               disabled={pending}
@@ -191,6 +199,7 @@ function ModalContent({
               {event.canceled ? <RotateCcw className="w-3.5 h-3.5" /> : <Ban className="w-3.5 h-3.5" />}
               {event.canceled ? "Reactivar" : "Cancelar"}
             </button>
+            )}
             {confirmDelete ? (
               <>
                 <button

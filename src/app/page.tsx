@@ -6,13 +6,13 @@ import { calcTotals } from "@/lib/events";
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const { events, role, userEmail, collaborators } = await loadEvents();
+  const { events, role, userEmail, collaborators, externalWritable } = await loadEvents();
   const totals = calcTotals(events.filter((e) => !e.external));
 
   return (
     <main className="mx-auto max-w-[1280px] px-[clamp(16px,3vw,28px)] pt-[clamp(28px,5vw,64px)] pb-[clamp(48px,8vw,96px)] relative">
       <Header totals={totals} userEmail={userEmail} role={role} />
-      <CalendarApp initialEvents={events} role={role} collaborators={collaborators} />
+      <CalendarApp initialEvents={events} role={role} collaborators={collaborators} externalWritable={externalWritable} />
     </main>
   );
 }

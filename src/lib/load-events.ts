@@ -6,6 +6,7 @@ import type { CalEvent } from "@/lib/events";
 import type { CatId } from "@/lib/cats";
 import type { Role } from "@/lib/auth";
 import { loadExternalEvents } from "@/lib/external-calendars";
+import { bridgeEnabled } from "@/lib/gcal-bridge";
 import { markConflicts } from "@/lib/ics-parse";
 
 export interface CollaboratorSummary {
@@ -17,6 +18,8 @@ export interface LoadedEvents {
   events: CalEvent[];
   role: Role | null;
   userEmail: string | null;
+  /** El dueño puede crear y modificar eventos de su calendario de Google desde la app. */
+  externalWritable: boolean;
   collaborators: CollaboratorSummary[];
 }
 
@@ -64,6 +67,7 @@ export async function loadEvents(): Promise<LoadedEvents> {
     events,
     role: user?.role ?? null,
     userEmail: user?.email ?? null,
+    externalWritable: user?.role === "owner" && bridgeEnabled(),
     collaborators,
   };
 }
