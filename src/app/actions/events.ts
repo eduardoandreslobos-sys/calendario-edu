@@ -7,8 +7,8 @@ import { requireWriter } from "@/lib/access";
 import { chileISO } from "@/lib/tz";
 import { CATS } from "@/lib/cats";
 
-// Todas las categorías propias; "ext_fen" es solo del calendario de Google y no se guarda en la base.
-const isOwnCat = (v: string) => v in CATS && v !== "ext_fen";
+// Todas las categorías propias; las "ext_*" son de calendarios externos (Google, Outlook) y no se guardan en la base.
+const isOwnCat = (v: string) => v in CATS && !v.startsWith("ext_");
 
 const upsertSchema = z.object({
   id: z.string().optional(),

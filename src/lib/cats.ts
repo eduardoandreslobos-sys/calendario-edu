@@ -11,7 +11,8 @@ export type CatId =
   | "nodo"
   | "personal"
   | "banco_central"
-  | "ext_fen";
+  | "ext_fen"
+  | "ext_uai";
 
 export interface Cat {
   name: string;
@@ -34,6 +35,7 @@ export const CATS: Record<CatId, Cat> = {
   personal:      { name: "Personal",              dot: "#6b7280", bg: "#f3f4f6", text: "#374151" },
   banco_central: { name: "Banco Central",        dot: "#ea580c", bg: "#ffedd5", text: "#9a3412" },
   ext_fen:       { name: "Mi calendario FEN (Google)", dot: "#0040a0", bg: "#e6ecf7", text: "#0a2a6b" },
+  ext_uai:       { name: "Mi calendario UAI (Outlook)", dot: "#0f766e", bg: "#e0f2ef", text: "#0b4f4a" },
 };
 
 export const CAT_ORDER: CatId[] = [
@@ -48,6 +50,7 @@ export const CAT_ORDER: CatId[] = [
   "personal",
   "banco_central",
   "ext_fen",
+  "ext_uai",
 ];
 
 const UNKNOWN_CAT: Cat = { name: "Otro", dot: "#6b7280", bg: "#f3f4f6", text: "#374151" };

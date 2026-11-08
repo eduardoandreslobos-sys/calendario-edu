@@ -154,7 +154,7 @@ export function CalendarApp({ initialEvents, role, collaborators, externalWritab
             hiddenCats={hiddenCats}
             onToggle={toggleCat}
             onShowAll={showAllCats}
-            omit={initialEvents.some((e) => e.external) ? [] : ["ext_fen"]}
+            omit={(["ext_fen", "ext_uai"] as CatId[]).filter((c) => !initialEvents.some((e) => e.catId === c))}
             only={catsInRange}
           />
         </Reveal>

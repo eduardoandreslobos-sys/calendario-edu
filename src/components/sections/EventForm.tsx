@@ -113,7 +113,7 @@ export function EventForm({ event, onClose, onSaved, externalWritable = false }:
             {!event?.external && (
             <Field label="Categoría">
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
-                {CAT_ORDER.filter((id) => id !== "ext_fen" || (externalWritable && !event)).map((id) => {
+                {CAT_ORDER.filter((id) => id !== "ext_uai" && (id !== "ext_fen" || (externalWritable && !event))).map((id) => {
                   const c = CATS[id];
                   const selected = id === catId;
                   return (

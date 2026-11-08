@@ -1,6 +1,7 @@
 import ICAL from "ical.js";
 import { chileLocalFromISO } from "@/lib/tz";
 import type { CalEvent } from "@/lib/events";
+import type { CatId } from "@/lib/cats";
 
 // Los eventos que este mismo calendario publica en /api/calendar.ics llevan este
 // sufijo en el UID. Si el calendario externo los incluye (por ejemplo porque se
@@ -20,7 +21,13 @@ function isoOf(t: ICAL.Time): string {
  * Se omiten: cancelados, "disponible" (TRANSP:TRANSPARENT) y los de otro origen
  * que ya son nuestros. Los eventos privados se muestran como "Ocupado".
  */
-export function parseIcsEvents(text: string, from: Date, to: Date, idPrefix = "ext"): CalEvent[] {
+export function parseIcsEvents(
+  text: string,
+  from: Date,
+  to: Date,
+  idPrefix = "ext",
+  catId: CatId = "ext_fen",
+): CalEvent[] {
   const root = new ICAL.Component(ICAL.parse(text));
 
   for (const vtz of root.getAllSubcomponents("vtimezone")) {
@@ -66,7 +73,7 @@ export function parseIcsEvents(text: string, from: Date, to: Date, idPrefix = "e
       title: isPrivate ? "Ocupado" : ev.summary || "(Sin título)",
       start: startIso,
       end: endIso,
-      catId: "ext_fen",
+      catId,
       location: isPrivate ? "" : ev.location ?? "",
       notes: "",
       external: true,
