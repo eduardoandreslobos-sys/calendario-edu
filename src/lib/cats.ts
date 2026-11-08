@@ -8,7 +8,6 @@ export type CatId =
   | "fen_basica"
   | "fen_starken"
   | "muni_florida"
-  | "geforce"
   | "nodo"
   | "personal"
   | "banco_central"
@@ -31,7 +30,6 @@ export const CATS: Record<CatId, Cat> = {
   fen_basica:    { name: "Diplomado Básica (FEN)",dot: "#0d9488", bg: "#ccfbf1", text: "#115e59" },
   fen_starken:   { name: "Starken (FEN)",        dot: "#4d7c0f", bg: "#ecfccb", text: "#3f6212" },
   muni_florida:  { name: "Muni La Florida",       dot: "#0891b2", bg: "#cffafe", text: "#155e75" },
-  geforce:       { name: "GeForce NOW",           dot: "#059669", bg: "#d1fae5", text: "#065f46" },
   nodo:          { name: "nodo.",                 dot: "#d97706", bg: "#fef3c7", text: "#92400e" },
   personal:      { name: "Personal",              dot: "#6b7280", bg: "#f3f4f6", text: "#374151" },
   banco_central: { name: "Banco Central",        dot: "#ea580c", bg: "#ffedd5", text: "#9a3412" },
@@ -46,7 +44,6 @@ export const CAT_ORDER: CatId[] = [
   "fen_santander",
   "fen_starken",
   "muni_florida",
-  "geforce",
   "nodo",
   "personal",
   "banco_central",
