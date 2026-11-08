@@ -137,7 +137,7 @@ export function CalendarApp({ initialEvents, role, collaborators, externalWritab
 
       <div className="max-md:hidden">
         <Reveal delay={0.62} y={20}>
-          <Stats events={visibleEvents.filter((e) => !e.external)} start={range?.start ?? null} end={range?.end ?? null} />
+          <Stats events={visibleEvents.filter((e) => !e.external && e.catId !== "familia")} start={range?.start ?? null} end={range?.end ?? null} />
         </Reveal>
       </div>
       <button
@@ -154,7 +154,7 @@ export function CalendarApp({ initialEvents, role, collaborators, externalWritab
             hiddenCats={hiddenCats}
             onToggle={toggleCat}
             onShowAll={showAllCats}
-            omit={(["ext_fen", "ext_uai"] as CatId[]).filter((c) => !initialEvents.some((e) => e.catId === c))}
+            omit={(["ext_fen", "ext_uai", "familia"] as CatId[]).filter((c) => !initialEvents.some((e) => e.catId === c))}
             only={catsInRange}
           />
         </Reveal>
@@ -192,6 +192,7 @@ export function CalendarApp({ initialEvents, role, collaborators, externalWritab
         <EventForm
           event={mode.type === "edit" ? mode.event : null}
           externalWritable={externalWritable}
+          isOwner={isOwner}
           onClose={() => setMode({ type: "closed" })}
           onSaved={() => {
             setMode({ type: "closed" });

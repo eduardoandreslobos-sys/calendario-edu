@@ -3,7 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState, useTransition } from "react";
 import { X } from "lucide-react";
-import { CATS, catOf, CAT_ORDER, type CatId } from "@/lib/cats";
+import { CATS, catOf, CAT_ORDER, OWNER_ONLY_CATS, type CatId } from "@/lib/cats";
 import { fmtHM } from "@/lib/format";
 import type { CalEvent } from "@/lib/events";
 import { upsertEvent } from "@/app/actions/events";
@@ -14,9 +14,10 @@ interface Props {
   onClose: () => void;
   onSaved: () => void;
   externalWritable?: boolean;
+  isOwner?: boolean;
 }
 
-export function EventForm({ event, onClose, onSaved, externalWritable = false }: Props) {
+export function EventForm({ event, onClose, onSaved, externalWritable = false, isOwner = false }: Props) {
   const formRef = useRef<HTMLFormElement>(null);
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -113,7 +114,7 @@ export function EventForm({ event, onClose, onSaved, externalWritable = false }:
             {!event?.external && (
             <Field label="Categoría">
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
-                {CAT_ORDER.filter((id) => id !== "ext_uai" && (id !== "ext_fen" || (externalWritable && !event))).map((id) => {
+                {CAT_ORDER.filter((id) => id !== "ext_uai" && (isOwner || !OWNER_ONLY_CATS.includes(id)) && (id !== "ext_fen" || (externalWritable && !event))).map((id) => {
                   const c = CATS[id];
                   const selected = id === catId;
                   return (

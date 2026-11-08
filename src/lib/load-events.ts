@@ -3,7 +3,7 @@ import { sql } from "@/lib/db";
 import { currentUser } from "@/lib/access";
 import { chileLocalFromISO } from "@/lib/tz";
 import type { CalEvent } from "@/lib/events";
-import type { CatId } from "@/lib/cats";
+import { OWNER_ONLY_CATS, type CatId } from "@/lib/cats";
 import type { Role } from "@/lib/auth";
 import { loadExternalEvents } from "@/lib/external-calendars";
 import { bridgeEnabled } from "@/lib/gcal-bridge";
@@ -41,7 +41,11 @@ export async function loadEvents(): Promise<LoadedEvents> {
     SELECT id, title, start_at, end_at, cat_id, location, notes, canceled
     FROM events ORDER BY start_at ASC`;
 
-  const own: CalEvent[] = rows.map((r) => ({
+  const isOwner = user?.role === "owner";
+  // Los eventos familiares (categoría "familia") los ve solo el dueño, igual que sus calendarios externos.
+  const visibleRows = isOwner ? rows : rows.filter((r) => !OWNER_ONLY_CATS.includes(r.cat_id));
+
+  const own: CalEvent[] = visibleRows.map((r) => ({
     id: r.id,
     title: r.title,
     start: chileLocalFromISO(r.start_at.toISOString()),
