@@ -90,7 +90,10 @@ export function CalendarView({ events, onRangeChange, onEventClick, onDayClick, 
           return undefined;
         }}
         datesSet={(info: DatesSetArg) => {
-          onRangeChange({ start: info.start, end: info.end }, info.view.type);
+          // currentStart/currentEnd es el período que se está mirando (el mes, la semana). info.start/end
+          // es la grilla visible, que en vista mensual arrastra días del mes anterior y del siguiente
+          // y hacía que los totales de noviembre incluyeran clases de fines de octubre.
+          onRangeChange({ start: info.view.currentStart, end: info.view.currentEnd }, info.view.type);
         }}
       />
     </section>

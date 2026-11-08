@@ -12,7 +12,7 @@ import { Upcoming } from "./Upcoming";
 import { EventModal } from "./EventModal";
 import { EventForm } from "./EventForm";
 import { ShareModal } from "./ShareModal";
-import type { CalEvent } from "@/lib/events";
+import { eventsInRange, type CalEvent } from "@/lib/events";
 import type { CatId } from "@/lib/cats";
 import type { Role } from "@/lib/auth";
 import type { CollaboratorSummary } from "@/lib/load-events";
@@ -84,6 +84,12 @@ export function CalendarApp({ initialEvents, role, collaborators, externalWritab
     [initialEvents, hiddenCats],
   );
 
+  // Categorías con al menos un evento en el período que se está mirando; la leyenda muestra solo esas.
+  const catsInRange = useMemo(() => {
+    if (!range) return undefined;
+    return new Set(eventsInRange(initialEvents, range.start, range.end).map((e) => e.catId));
+  }, [initialEvents, range]);
+
   const handleRange = useCallback((r: { start: Date; end: Date }, v: string) => {
     setRange(r);
     setViewType(v);
@@ -149,6 +155,7 @@ export function CalendarApp({ initialEvents, role, collaborators, externalWritab
             onToggle={toggleCat}
             onShowAll={showAllCats}
             omit={initialEvents.some((e) => e.external) ? [] : ["ext_fen"]}
+            only={catsInRange}
           />
         </Reveal>
       </div>
